@@ -1,0 +1,39 @@
+.error-media svg {
+    width: 100%;
+    visibility: hidden;
+}
+.error-text h1 {
+    font-size: 3.5em;
+}
+.overlay-text{
+    font-size: 21rem;
+    position: absolute;
+    color: #000;
+    z-index: -1;font-weight: 600;
+    left: 0;
+    right: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    opacity: 0.03;
+    justify-content: center;
+    top: 0;
+}
+.footer{
+    margin:0 !important;
+}
+@media (max-width:576px){
+    .error-text h1 {
+	font-size: 3em;
+	margin-bottom: 10px !important;
+    }
+}
+@media (max-width:500px){
+    .error-text h1 {
+	font-size: 2.2em;
+	margin-bottom: 10px !important;
+    }
+    .overlay-text{
+	font-size:14rem;
+    }
+}

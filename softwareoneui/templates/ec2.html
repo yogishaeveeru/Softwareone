@@ -1,0 +1,53 @@
+{% extends 'profile.html' %}
+{% block content %}
+
+<div class="modal">
+    <form class="form">
+
+      <div class="separator">
+        <hr class="line">
+        <p>EC2</p>
+        <hr class="line">
+      </div>
+
+      <div class="credit-card-info--form">
+
+        {% comment %} <div class="input_container">
+          <label for="password_field" class="input_label">AWS Account No</label>
+          <input id="password_field" class="input_field" type="text" name="input-name" title="Inpit title" placeholder="0000 0000 0000 0000">
+        </div>
+
+        <div class="input_container">
+          <label for="password_field" class="input_label">AWS Account Name</label>
+          <input id="password_field" class="input_field" type="number" name="input-name" title="Inpit title" placeholder="Enter your full name">
+        </div>
+
+
+        <div class="input_container">
+          <label for="password_field" class="input_label">AWS Access Key</label>
+          <input id="password_field" class="input_field" type="text" name="input-name" title="Inpit title" placeholder="* Access Key..">
+        </div>
+
+        <div class="input_container">
+          <label for="password_field" class="input_label">AWS Secret key</label>
+          <input id="password_field" class="input_field" type="number" name="input-name" title="Inpit title" placeholder="* Secret Key..">
+        </div> {% endcomment %}
+
+        
+
+        {% comment %} <div class="input_container">
+          <label for="password_field" class="input_label">Expiry Date / CVV</label>
+          <div class="split">
+            <input id="password_field" class="input_field" type="text" name="input-name" title="Expiry Date" placeholder="01/23">
+            <input id="password_field" class="input_field" type="number" name="cvv" title="CVV" placeholder="CVV">
+          </div>
+        </div> {% endcomment %}
+
+      </div>
+
+      {% comment %} <button class="purchase--btn">Register</button> {% endcomment %}
+
+    </form>
+  </div>
+
+{% endblock content %}

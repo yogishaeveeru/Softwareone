@@ -1,0 +1,51 @@
+@import
+'theme-variables',
+'pages/wizard/wizard-1';
+
+.wizard {
+    [data-wizard-type="step-content"] {
+        display: none;
+    }
+
+    [data-wizard-state="current"] {
+        display: block;
+    }
+
+    &[data-wizard-state="last"] [data-wizard-type="action-next"],
+    [data-wizard-type="action-prev"],
+    [data-wizard-type="action-submit"],
+    [data-wizard-type="action-prev"],
+    [data-wizard-type="action-submit"] {
+        display: none;
+    }
+
+    &[data-wizard-state="last"] [data-wizard-type="action-submit"],
+    &[data-wizard-state="last"] [data-wizard-type="action-prev"],
+    &[data-wizard-state="between"] [data-wizard-type="action-prev"] {
+        display: block;
+    }
+
+    &-steps {
+        [data-wizard-state="pending"] {
+            .wizard-title {
+                color: $color-b5b5c3 !important;
+                font-weight: normal !important;
+	    }
+
+            path {
+                fill: $color-b5b5c3;
+	    }
+	}
+
+        [data-wizard-state="current"],
+        [data-wizard-state="done"] {
+            .wizard-title {
+                color: $primary !important;
+	    }
+
+            path {
+                fill: $primary;
+	    }
+	}
+    }
+}

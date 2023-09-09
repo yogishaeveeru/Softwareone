@@ -1,0 +1,28 @@
+{% extends 'profile.html' %}
+{% load static %}
+{% block content %}
+
+<body class="container m-5 p-3">
+  <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="mb-1 mb-sm-5 row">
+          <label for="customer">Select a Customer</label>
+            <select id="customer" class="form-select form-select-solid" data-control="select2">
+            </select>
+        </div>
+        <div class="mb-1 mb-sm-5 row" id="action_div"></div>
+        <div id="dynamic-content">
+            <!-- Dynamic content will be added here based on selected option -->
+        </div>
+      </div>
+  </div>
+
+
+{% endblock content %}
+{% block js%}
+<script>
+  const user = "{{view.request.user.id}}"
+</script>
+<script src="{% static 'assets/js/select2.js' %}"></script>
+<script src="{% static 'js/s3.js' %}"></script>
+{% endblock js%}

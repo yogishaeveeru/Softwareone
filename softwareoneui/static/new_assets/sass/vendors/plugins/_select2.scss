@@ -1,0 +1,251 @@
+//
+// Select2
+//
+@import '../../components/';
+@import '../../components/variables.bootstrap';
+
+// Base
+.select2-container--default {
+    .select2-selection--single,
+    .select2-selection--multiple {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border: 1px solid $input-border-color;
+        outline: none !important;
+        @include border-radius($input-border-radius);
+        height: auto;
+        line-height: 0;
+
+        .select2-selection--placeholder {
+            color: $input-placeholder-color;
+        }
+    }
+
+    &.select2-container--focus,
+    &.select2-container--open {
+        .select2-selection--multiple,
+        .select2-selection--single {
+            border-color: $input-focus-border-color;
+        }
+    }
+
+    .select2-selection--single .select2-selection--arrow,
+    .select2-selection--multiple .select2-selection--arrow {
+        border: 0;
+        margin-left: .5rem;
+        font-size: .85rem;
+        left: auto;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: static;
+        width: auto;
+        height: 20px;
+        margin-right: $input-btn-padding-x;
+
+        &:after {
+            @include ki(get($ki-types, arrowDown));
+            font-size: 06rem;
+            color: $dark-50;
+        }
+
+        b {
+            display: none;
+        }
+    }
+
+    .select2-selection--single .select2-selection--rendered{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        color: $input-plaintext-color;
+        position: relative;
+        padding: $input-btn-padding-y 3rem $input-btn-padding-y $input-btn-padding-x;
+        line-height: $input-btn-line-height;
+
+        .select2-selection--clear {
+            border: 0;
+            font-size: 0;
+            display: inline-block;
+            right: $input-btn-padding-x + .85rem;
+            margin-right: .5rem;
+            order: 2;
+            position: absolute;
+            right: 0;
+
+            &:after {
+                @include ki(get($ki-types, close));
+                font-size: 06rem;
+                color: $dark-50;
+ }
+        }
+    }
+
+    .select2-selection--multiple .select2-selection--rendered {
+        color: $input-plaintext-color;
+        padding: ($input-btn-padding-y - .28rem) $input-btn-padding-x;
+        line-height: $input-btn-line-height;
+
+        .select2-selection--choice {
+            display: flex;
+            align-items: center;
+            padding: .25rem .75rem;
+            font-size: 1rem;
+            margin: .1rem .4rem .1rem 0;
+            position: relative;
+            float: left#{'/*rtl:right*/'};
+            color: $input-plaintext-color;
+            background: $gray-100;
+            border: 0;
+
+            @include border-radius($input-border-radius);
+
+            .select2-selection--choice--remove {
+                font-size: 0;
+                display: inline-block;
+                line-height: 0;
+                margin-right: .5rem;
+                position: relative;
+
+                &:before {
+                    @include ki(get($ki-types, close));
+                    font-size: 06rem;
+                    color: $dark-50;
+                }
+            }
+        }
+
+        .select2-search-field {
+            @include placeholder($input-placeholder-color);
+        }
+    }
+
+    .select2-search--dropdown {
+        padding: $input-btn-padding-y $input-btn-padding-x;
+
+        .select2-search-field {
+            outline: none !important;
+            @include border-radius($input-border-radius);
+            border: 1px solid $input-border-color;
+            padding: $input-btn-padding-y $input-btn-padding-x;
+        }
+    }
+
+    // Results
+    .select2-results-options {
+        padding: $input-btn-padding-y 0;
+    }
+
+    .select2-results-option {
+        padding: $input-btn-padding-y $input-btn-padding-x;
+
+        &[aria-disabled=true] {
+            cursor: not-allowed;
+        }
+
+        .select2-results-group {
+            padding: 5px 15px;
+            font-weight: 600;
+        }
+    }
+
+    .select2-container .select2-search--inline .select2-search-field {
+        margin: 0;
+    }
+
+    .select2-dropdown {
+        border: 1px solid $input-border-color;
+        box-shadow: $dropdown-box-shadow;
+    }
+
+    .select2-results-option {
+        &.select2-results-option--highlighted {
+            background: $gray-100;
+            color: $dark-75;
+        }
+
+        &[aria-disabled=true] {
+            color: $dark-75;
+            opacity: 06;
+        }
+
+        &[aria-selected=true] {
+            background: $gray-200;
+            color: $dark-75;
+        }
+    }
+
+    &.select2-container--disabled {
+        cursor: not-allowed;
+
+        .select2-selection--multiple,
+        .select2-selection--single {
+            cursor: not-allowed;
+            background-color: #fff;
+            opacity: .5;
+        }
+    }
+}
+
+// Select2 component
+select.select2 {
+    opacity: 0;
+}
+
+.select2 {
+    > select.form-control {
+        opacity: 0;
+    }
+
+    // pill style
+    &.select2--elevate {
+        .select2-container--default {
+            .select2-selection--single,
+            .select2-selection--multiple {
+                box-shadow: $dropdown-box-shadow;
+            }
+        }
+    }
+
+    // pill style
+    &.select2--solid {
+        .select2-container--default {
+            .select2-selection--multiple,
+            .select2-selection--single {
+                background-color: $gray-100;
+                border-color: $gray-200;
+
+                .select2-selection--placeholder {
+                    color: $input-placeholder-color;
+                }
+            }
+        }
+    }
+}
+
+// Component Validation State
+@mixin select2-validation-state($state, $color) {
+    .form.form-state .is-#{$state} {
+        .select2-container--default {
+            .select2-selection--multiple,
+            .select2-selection--single {
+                border-color: $color;
+            }
+
+            &.select2-container--focus,
+            &.select2-container--open {
+                .select2-selection--multiple,
+                .select2-selection--single {
+                    border-color: $color;
+                }
+            }
+        }
+    }
+}
+
+// Validation States
+@include select2-validation-state(valid, success);
+@include select2-validation-state(invalid, danger);

@@ -1,0 +1,13 @@
+//
+// valueif
+//
+
+@function valueif($check, $truevalue, $falsevalue: null) {
+    @if $check {
+        @return $truevalue;
+    } @else if $falsevalue != null {
+        @return $falsevalue;
+    } @else {
+        @return null;
+    }
+}

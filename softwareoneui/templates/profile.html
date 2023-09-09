@@ -1,0 +1,84 @@
+<html>
+<head>
+    {% load static %}
+	<link rel="icon" type="image/x-icon" href="{% static 'img/logo.jpg' %}">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/plugins/global/plugins.bundle.css' %}" />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/> -->
+    <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /> -->
+    {% block head_js %}
+    <script src="{% static 'assets/plugins/global/plugins.bundle.js' %}"></script>
+    <script src="{% static 'js/softwareoneauth/base.js' %}"></script>
+    <script>
+      const CURRENT_URL = '{{ request.path }}';
+      const LOGIN_URL = 'http://127.0.0.1:8000';
+      const MAIN_PAGE_URL = '{% url "profile" %}';
+      const PERMISSION_DENIED_IMAGE_STATIC_FILE_URL = '{% static "img/blur-image.png" %}';
+      const ONE_APP_BASE_URL = 'http://127.0.0.1:8000';
+    </script>
+    <script src="{% static 'js/softwareoneauth/loggedin_check.js' %}"></script>
+  {% endblock head_js %}
+
+    {% block style_n_title %} <title>My Account</title> {% endblock %}
+
+</head>
+<body>
+    <div id="main">
+        <div class="nav">
+            <div class="img">
+                <img src="{% static 'img/one1.jpg' %}" height="70px" width="240px" alt="logo">
+            </div>
+
+            <div class="icon-home">
+                <a href="{% url 'profile' %}"><span class="material-symbols-outlined">home</span></a>
+            </div>
+
+            <div class="user">
+                <div class="mail">
+                    <span class="mail1" id="userfirstname"></span>
+                </div>
+                <div class="logout">
+                    <a class="out" href="#" id="logoutBtn">Logout</a>
+                </div>
+            </div>
+        </div>
+
+        <div class='main-data'>
+            <div class="sidebar">
+                <img class="img1" src="{% static 'img/aws.png' %}" height="80px" width="110px" alt="logo">
+                <ul class="aws">
+                    <li class="aws-active"><a class="a1" href="{% url 'aws' %}">AWS Account</a></li>
+                    <li class="dpy-down"><a class="a2 dpy-btn">Deployment<span class="fas fa-caret-down first"></span></a>
+                        <ul class="dpy-show">
+                            <li><a href="{% url 'vpc' %}"><span class="vpc-img"><img class="img2" src="{% static 'img/vpc.png' %}" height="20px" width="30px" alt="logo"></span>VPC</a></li>
+                            <li><a href="{% url 'ec2' %}"><span class="vpc-img"><img class="img2" src="{% static 'img/ec2.png' %}" height="20px" width="30px" alt="logo"></span>EC2</a></li>
+                            <li><a href="{% url 's3' %}"><span class="vpc-img"><img class="img2" src="{% static 'img/s3.png' %}" height="20px" width="30px" alt="logo"></span>S3</a></li>
+                        </ul>
+                    </li>
+                    <li class="report-active"><a class="a3" href="{% url 'report' %}" class="serv-btn">Report</a></li>
+                </ul>
+            </div>
+
+            <div class="data">
+            {% block content %}
+    
+            {% endblock content %}
+            </div>
+        </div>
+    </div>
+
+    {% comment %} <script>
+        $('.dpy-btn').click(function(){
+            $('.sidebar .aws .dpy-show').toggleClass("show"); 
+            $('.sidebar .aws .first').toggleClass("rotate");
+          });
+         $('.sidebar .aws .aws-active').click(function(){
+            $(this).addClass("active").siblings().removeClass("active");
+        });
+    </script> {% endcomment %}
+    {% block js%}
+    <script src="{% static 'js/base.js' %}"></script>
+    <script src="{% static 'js/profile.js' %}"></script>
+    {% endblock js%}
+</body>
+</html>

@@ -1,0 +1,15 @@
+.js-drop {
+    position: relative;
+
+    &menu {
+        width: 100%;
+    }
+
+    &btn {
+        min-width: 170px;
+
+        &::after {
+            display: none !important;
+	}
+    }
+}

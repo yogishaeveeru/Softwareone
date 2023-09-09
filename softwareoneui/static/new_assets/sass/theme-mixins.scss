@@ -1,0 +1,111 @@
+@import 'base/mixins';
+@import 'components/mixins';
+@import 'vendors/plugins/mixins';
+
+// Bootstrap mixins
+@import '../bootstrap/scss/mixins';
+
+@mixin switch-size(
+$margin,
+$width,
+$height,
+$line-height,
+$space,
+$checked-tick-pos,
+$icon-font-size
+) {
+
+    input:empty ~ span {
+        border-radius: ($height / 2);
+        height: $height;
+        margin: $margin;
+        width: $width + $space;
+}
+
+    input:empty ~ span::before,
+    input:empty ~ span::after {
+        border-radius: ($height / 2);
+        width: $width;
+}
+
+    input:empty ~ span::after {
+        bottom: $space;
+        font-size: $icon-font-size;
+        height: $height - 2 * $space;
+        margin-left: $space;
+        text-align: center;
+        top: $space;
+        vertical-align: middle;
+        width: $height - 2 * $space;
+}
+
+    input:checked ~ span::after {
+        margin-left: $checked-tick-pos;
+        }
+	}
+
+@mixin switch-default-theme(
+$base,
+$tick,
+$checked-base,
+$checked-tick-bg,
+$checked-tick-color
+) {
+// Base
+    input:empty ~ span::before {
+        background-color: $base;
+}
+
+// Tick
+    input:empty ~ span::after {
+        background-color: $tick;
+        opacity: .7;
+}
+
+    input:checked {
+        // Base
+        ~ span::before {
+            background-color: $checked-base;
+}
+
+        // Tick
+        ~ span::after {
+            background-color: $checked-tick-bg;
+            color: $checked-tick-color;
+            opacity: 1;
+			      }
+			        }
+				}
+
+@mixin switch-outline-theme(
+$outline,
+$tick-bg,
+$checked-outline,
+$checked-tick-bg,
+$checked-tick-color
+) {
+// Base
+    input:empty ~ span::before {
+        background-color: transparent;
+        border: 2px solid $outline;
+		        }
+
+// Tick
+    input:empty ~ span::after {
+        background-color: $tick-bg;
+	  }
+
+    input:checked {
+// Base
+        ~ span::before {
+            background-color: transparent;
+            border: 2px solid $checked-outline;
+		          }
+
+// Tick
+        ~ span::after {
+            background-color: $checked-tick-bg;
+            color: $checked-tick-color;
+}
+			  }
+			  }

@@ -1,0 +1,6279 @@
+//Functions
+//
+// Get
+//
+
+@function get($map, $keys...) {
+  @if length($keys) == 1 {
+      $keys: nth($keys, 1);
+  }
+
+  @if type-of($map) != 'map' or $map == null {
+      //@return false;
+  }
+
+  $warn: "#{nth($keys, 1)}";
+  $length: length($keys);
+  $get: map-get($map, nth($keys, 1));
+
+  @if $length > 1 {
+      @for $i from 2 through $length {
+          @if $get != null and type-of($get) == 'map' {
+              $warn: $warn + "->#{nth($keys, $i)}";
+              $get: map-get($get, nth($keys, $i));
+
+              @if $get == null {
+                  @return null;
+              }
+          }
+          @else {
+              @return get-warning($warn, $get, nth($keys, $i));
+          }
+      }
+  }
+
+  @return $get;
+}
+
+@function has($map, $keys...) {
+  @if length($keys) == 1 {
+      $keys: nth($keys, 1);
+  }
+
+  @if type-of($map) != 'map' or $map == null {
+      //@return false;
+  }
+
+  $warn: "#{nth($keys, 1)}";
+  $length: length($keys);
+  $get: map-get($map, nth($keys, 1));
+
+  @if $length > 1 {
+      @for $i from 2 through $length {
+          @if $get != null and type-of($get) == 'map' {
+              $warn: $warn + "->#{nth($keys, $i)}";
+              $get: map-get($get, nth($keys, $i));
+
+              @if $get == null {
+                  @return false;
+              }
+          }
+          @else {
+               @return false;
+          }
+      }
+  }
+
+  @if $get != null {
+      @return true;
+  }
+  @else {
+      @return false;
+  }
+}
+
+@function get-warning($warn, $get, $key) {
+  @if $get == null {
+      @warn "Map has no value for key search `#{$warn}`";
+  }
+  @else if type-of($get) != 'map' {
+      @warn "Non-map value found for key search `#{$warn}`, cannot search for key `#{$key}`";
+  }
+  @return null;
+}
+
+@function sqrt($r) {
+  $x0: 1;
+  $x1: $x0;
+
+  @for $i from 1 through 10 {
+      $x1: $x0 - ($x0 * $x0 - abs($r)) / (2 * $x0);
+      $x0: $x1;
+  }
+
+  @return $x1;
+}
+
+@function theme-inverse-color($key: 'primary') {
+  @return get($theme-inverse-colors, $key);
+}
+
+@function theme-outline-inverse-color($key: 'primary') {
+  @return get($theme-outline-inverse-colors, $key);
+}
+
+@function theme-hover-color($key: 'primary') {
+  @return get($theme-hover-colors, $key);
+}
+
+@function theme-light-color($key: 'primary') {
+  @return get($theme-light-colors, $key);
+}
+
+@function theme-shadow-color($key: 'primary') {
+  @return get($theme-shadow-colors, $key);
+}
+
+@function unitless($number) {
+  @if type-of($number) == 'number' and not unitless($number) {
+      @return $number / ($number * 0 + 1);
+  }
+
+  @return $number;
+}
+
+//Mixins
+@mixin attr($attr, $value, $important: '') {
+  @if  $value != null  {
+      #{$attr}: #{$value} #{$important};
+  }
+}
+
+@mixin for-ie11 {
+	// Microsoft IE11
+	@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+		@content;
+	}
+}
+
+@mixin for-edge {
+    // Microsoft Edge
+	@supports (-ms-ime-align:auto) {
+		@content;
+	}
+}
+@mixin fix-fixed-position-lags() {
+	// webkit hack for smooth font view on fixed positioned elements
+	-webkit-backface-visibility:hidden;
+	backface-visibility:hidden;
+}
+
+@mixin fix-animation-lags() {
+    transform: translateZ(0);
+    -webkit-transform-style: preserve-3d;
+}
+@mixin placeholder($color) {
+  &::-moz-placeholder {
+      color: $color;
+      opacity: 1;
+  }
+  // See https://github.com/twbs/bootstrap/pull/11526
+  &:-ms-input-placeholder {
+      color: $color;
+  }
+  // Internet Explorer 10+
+  &::-webkit-input-placeholder {
+      color: $color;
+  }
+  // Safari and Chrome
+}
+
+@mixin button-reset() {
+  appearance: none;
+  box-shadow: none;
+  border-radius: none;
+  border: 0;
+  cursor: pointer;
+  background-color: transparent;
+  outline: none  !important;
+  margin: 0;
+  padding: 0;
+}
+
+@mixin input-reset() {
+border: 0;
+background-color: transparent;
+outline: none !important;
+box-shadow: none;
+}
+
+@mixin tooltip-theme($color, $bg-color) {
+  .tooltip-inner {
+      color: $color;
+      background-color: $bg-color;
+  }
+
+  &.bs-tooltip-top {
+      .arrow::before {
+          border-top-color: $bg-color;
+      }
+  }
+
+  &.bs-tooltip-right {
+      .arrow::before {
+          border-right-color: #{$bg-color}#{'/*rtl:ignore*/'};
+      }
+  }
+
+  &.bs-tooltip-bottom {
+      .arrow::before {
+          border-bottom-color: $bg-color;
+      }
+  }
+
+  &.bs-tooltip-left {
+      .arrow::before {
+          border-left-color: $bg-color#{'/*rtl:ignore*/'};
+      }
+  }
+}
+
+@mixin button-custom-variant(
+    $background, $border, $color, $icon, $box-shadow,
+    $hover-background, $hover-border, $hover-color, $hover-icon, $hover-box-shadow,
+    $active-background, $active-border, $active-color, $active-icon, $active-box-shadow) {
+
+    // Initial state
+    @if ($color != null) {
+        color: $color;
+    }
+
+    @if ($icon != null) {
+        i {
+    		color: $icon;
+    	}
+
+    	.svg-icon {
+    		@include svg-icon-color($icon);
+    	}
+
+        &.dropdown-toggle:after {
+            color: $icon;
+        }
+    }
+
+    @if ($background != null) {
+        background-color: $background;
+    }
+
+    @if ($border != null) {
+        border-color: $border;
+    }
+
+    // Hover & focus state
+    @if ($hover-color != null or $hover-border != null or $hover-icon != null or $hover-background != null) {
+        &:hover:not(.btn-text):not(:disabled):not(.disabled),
+        &:focus:not(.btn-text),
+        &.focus:not(.btn-text) {
+            @if ($hover-color != null) {
+                color: $hover-color;
+            }
+
+            @if ($hover-icon != null) {
+                i {
+            		color: $hover-icon;
+            	}
+
+            	.svg-icon {
+            		@include svg-icon-color($hover-icon);
+            	}
+
+                &.dropdown-toggle:after {
+                    color: $hover-icon;
+                }
+            }
+
+            @if ($hover-background != null) {
+                background-color: $hover-background;
+            }
+
+            @if ($hover-border != null) {
+                border-color: $hover-border;
+            }
+        }
+    }
+
+    // Disabled state
+    @if ($color != null or $icon != null or $border != null or $background != null) {
+        // Disabled comes first so active can properly restyle
+        &.disabled,
+        &:disabled {
+            @if ($color != null) {
+                color: $color;
+            }
+
+            @if ($icon != null) {
+                i {
+            		color: $icon;
+            	}
+
+            	.svg-icon {
+            		@include svg-icon-color($icon);
+            	}
+
+                &.dropdown-toggle:after {
+                    color: $icon;
+                }
+            }
+
+            @if ($background != null) {
+                background-color: $background;
+            }
+
+            @if ($border != null) {
+                border-color: $border;
+            }
+        }
+    }
+
+    // Active state
+    @if ($active-color != null or $active-icon != null or $active-border != null or $active-background != null) {
+        &:not(:disabled):not(.disabled):active:not(.btn-text),
+        &:not(:disabled):not(.disabled).active,
+        .show > &.dropdown-toggle,
+        .show &.btn-dropdown {
+            @if ($active-color != null) {
+                color: $active-color;
+            }
+
+            @if ($active-icon != null) {
+                i {
+            		color: $active-icon;
+            	}
+
+            	.svg-icon {
+            		@include svg-icon-color($active-icon);
+            	}
+
+                &.dropdown-toggle:after {
+                    color: $active-icon;
+                }
+            }
+
+            @if ($active-background != null) {
+                background-color: $active-background;
+            }
+
+            @if ($active-border != null) {
+                border-color: $active-border;
+            }
+        }
+    }
+
+    // Box shadow
+    @if ($box-shadow != null) {
+        box-shadow: $box-shadow;
+    }
+
+    @if ($hover-box-shadow != null) {
+        &:hover:not(.btn-text):not(:disabled):not(.disabled),
+        &:focus:not(.btn-text),
+        &.focus:not(.btn-text) {
+            box-shadow: $hover-box-shadow;
+        }
+    }
+
+    @if ($active-box-shadow != null) {
+        &:not(:disabled):not(.disabled):active:not(.btn-text),
+        &:not(:disabled):not(.disabled).active,
+        .show > &.dropdown-toggle {
+            box-shadow: $active-box-shadow;
+        }
+    }
+}
+
+
+@mixin button-custom-transition($transition) {
+    // Initial state
+    transition: $transition;
+
+    i {
+        transition: $transition;
+    }
+
+    // Hover & focus state
+    &:hover:not(.btn-text),
+    &:focus:not(.btn-text),
+    &.focus {
+        transition: $transition;
+
+        i {
+            transition: $transition;
+        }
+    }
+
+    // Disabled state
+    &.disabled,
+    &:disabled {
+        transition: $transition;
+
+        i {
+            transition: $transition;
+        }
+    }
+
+    // Active state
+    &:not(:disabled):not(.disabled):active:not(.btn-text),
+    &:not(:disabled):not(.disabled).active,
+    .show > &.dropdown-toggle {
+        transition: $transition;
+
+        i {
+            transition: $transition;
+        }
+    }
+}
+
+@mixin burger-icon-build($config) {
+	$space: get($config, thickness) + get($config, space);
+
+	@include button-reset();
+
+	display: inline-block;
+	position: relative;
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+	font-size: 0;
+	text-indent: -9999px;
+	appearance: none;
+	box-shadow: none;
+	border-radius: none;
+	border: 0;
+	cursor: pointer;
+	background-color:none;
+	outline: none !important;
+	width: get($config, width);
+	height: get($config, height);
+	transition: get($config, transition);
+
+	span {
+		display: block;
+  		position: absolute;
+		@include border-radius(get($config, radius));
+		transition: get($config, transition);
+  		top: (get($config, height) / 2) - (get($config, thickness)) + 1px;
+  		height: get($config, thickness);
+  		min-height: get($config, thickness);
+  		width: 100%;
+
+  		&::before,
+  		&::after {
+  			position: absolute;
+		  	display: block;
+		  	left: 0;
+		  	width: 100%;
+		  	height: get($config, thickness);
+		  	min-height: get($config, thickness);
+		  	content: "";
+		  	transition: get($config, transition);
+			@include border-radius(get($config, radius));
+  		}
+
+  		&::before {
+  			top: -($space);
+  		}
+
+  		&::after {
+  			bottom: -($space);
+  		}
+	}
+
+    // Left Direction
+    &-left {
+    	span {
+    		&:before {
+    			transition: get($config, transition);
+    			left: auto;
+    			right: 0;
+    			width: 50%;
+    		}
+
+    		&:after {
+    			transition: get($config, transition);
+    			left: auto;
+    			right: 0;
+    			width: 75%;
+    		}
+    	}
+
+    	// Active State
+	    &-active {
+	    	span {
+	    		&:before {
+	    			transition: get($config, transition);
+	    			left: 0;
+	    			right: auto;
+	    			width: 50%;
+	    		}
+
+	    		&:after {
+	    			transition: get($config, transition);
+	    			left: 0;
+	    			right: auto;
+	    			width: 75%;
+	    		}
+	    	}
+	    }
+    }
+
+    // Right Direction
+    &-right {
+    	span {
+	    	&:before {
+	    		left: 0;
+	    		right: auto;
+	    		width: 50%;
+	    		transition: get($config, transition);
+	    	}
+
+	    	&:after {
+	    		left: 0;
+	    		right: auto;
+	    		width: 75%;
+	    		transition: get($config, transition);
+	    	}
+	    }
+
+    	// Active State
+	    &-active {
+	    	span {
+	    		&:before {
+	    			left: auto;
+    				right: 0;
+	    			width: 50%;
+	    			transition: get($config, transition);
+	    		}
+
+	    		&:after {
+	    			left: auto;
+    				right: 0;
+	    			width: 75%;
+	    			transition: get($config, transition);
+	    		}
+	    	}
+	    }
+    }
+}
+
+@mixin burger-icon-theme($default, $hover, $active) {
+	span {
+ 		background-color: $default;
+
+  		&::before,
+  		&::after {
+		  	background-color: $default;
+  		}
+	}
+
+    // Hover State
+    &:hover {
+    	span {
+	    	background-color: $hover;
+
+	    	&::before,
+	  		&::after {
+	  			background-color: $hover;
+	  		}
+	  	}
+    }
+
+	// Active State
+    &-active {
+		span {
+	    	background-color: $active;
+
+	    	&::before,
+	  		&::after {
+	  			background-color: $active;
+	  		}
+	  	}
+	}
+}
+
+@mixin checkbox-solid-theme($bg-color, $checked-bg-color, $checked-tick-color) {
+	// Default state
+    > span {
+        background-color: $bg-color;
+        border: 1px solid transparent;
+    }
+
+	// Focus state
+    > input:focus ~ span {
+        border: 1px solid transparent;
+    }
+
+	// Checked state
+    > input:checked ~ span {
+        background-color: $checked-bg-color;
+
+		&:after {
+            border-color: $checked-tick-color;
+        }
+    }
+}
+
+@mixin checkbox-outline-theme($outline-color, $checked-outline-color, $checked-tick-color) {
+	// Default state
+	> span {
+		background-color: transparent;
+        border-color: $outline-color;
+    }
+
+	// Focus state
+	> input:focus ~ span {
+		background-color: transparent;
+        border-color: $outline-color;
+    }
+
+	// Checked state
+    > input:checked ~ span {
+		background-color: transparent;
+        border-color: $checked-outline-color;
+
+		&:after {
+            border-color: $checked-tick-color;
+        }
+    }
+}
+
+@mixin checkbox-size($base, $tick) {
+	> span {
+        height: $base;
+        width: $base;
+
+		&:after {
+            width: $tick / 2;
+            height: $tick;
+		}
+	}
+}
+
+
+@mixin radio-solid-theme($bg-color, $checked-bg-color, $checked-tick-color) {
+	// Default state
+    > span {
+        background-color: $bg-color;
+        border: 1px solid transparent;
+    }
+
+	// Focus state
+    > input:focus ~ span {
+        border: 1px solid transparent;
+    }
+
+	// Checked state
+    > input:checked ~ span {
+        background-color: $checked-bg-color;
+
+		&:after {
+            background-color: $checked-tick-color;
+            border-color: $checked-tick-color;
+        }
+    }
+}
+
+@mixin radio-outline-theme($outline-color, $checked-outline-color, $checked-tick-color) {
+	// Default state
+	> span {
+		background-color: transparent;
+        border-color: $outline-color;
+    }
+
+	// Focus state
+	> input:focus ~ span {
+		background-color: transparent;
+        border-color: $outline-color;
+    }
+
+	// Checked state
+    > input:checked ~ span {
+		background-color: transparent;
+        border-color: $checked-outline-color;
+
+		&:after {
+            background-color: $checked-tick-color;
+            border-color: $checked-tick-color;
+        }
+    }
+}
+
+@mixin radio-accent-theme($bg-color, $checked-border-color) {
+	// Default state
+	> span {
+        &:after {
+            background-color: $bg-color;
+        }
+    }
+
+	// Focus state
+	> input:focus ~ span {
+        border-color: $checked-border-color;
+
+        &:after {
+            background-color: $bg-color;
+        }
+    }
+
+	// Checked state
+    > input:checked ~ span {
+        border-color: $checked-border-color;
+
+        &:after {
+            background-color: $bg-color;
+        }
+    }
+}
+
+@mixin radio-size($base, $tick) {
+	> span {
+        height: $base;
+        width: $base;
+
+		&:after {
+            width: $tick;
+            height: $tick;
+		}
+	}
+}
+
+@mixin switch-size($margin, $width, $height, $line-height, $space, $checked-tick-pos, $icon-font-size) {
+  input:empty ~ span {
+      //line-height: $line-height;
+      margin: $margin;
+      height: $height;
+      width: $width + $space;
+      border-radius: ($height/2);
+  }
+
+  input:empty ~ span:before,
+  input:empty ~ span:after {
+      width: $width;
+      border-radius: ($height/2);
+  }
+
+  input:empty ~ span:after {
+      height: $height - 2 * $space;
+      width: $height - 2 * $space;
+      //line-height: $line-height;
+      top: $space;
+      bottom: $space;
+      margin-left: $space;
+      font-size: $icon-font-size;
+      text-align: center;
+      vertical-align: middle;
+  }
+
+  input:checked ~ span:after {
+      margin-left: $checked-tick-pos;
+  }
+}
+
+@mixin switch-default-theme($base, $tick, $checked-base, $checked-tick-bg, $checked-tick-color) {
+  // Base
+  input:empty ~ span:before {
+      background-color: $base;
+  }
+
+  // Tick
+  input:empty ~ span:after {
+      background-color: $tick;
+      opacity: .7;
+  }
+
+  input:checked {
+      // Base
+      ~ span:before {
+          background-color: $checked-base;
+      }
+
+      // Tick
+      ~ span:after {
+          opacity: 1;
+          color: $checked-tick-color;
+          background-color: $checked-tick-bg;
+      }
+  }
+}
+
+@mixin switch-outline-theme($outline, $tick-bg, $checked-outline, $checked-tick-bg, $checked-tick-color) {
+  // Base
+  input:empty ~ span:before {
+      border: 2px solid $outline;
+      background-color: transparent;
+  }
+
+  // Tick
+  input:empty ~ span:after {
+      background-color: $tick-bg;
+  }
+
+  input:checked {
+      // Base
+      ~ span:before {
+          border: 2px solid $checked-outline;
+          background-color: transparent;
+      }
+
+      // Tick
+      ~ span:after {
+          color: $checked-tick-color;
+          background-color: $checked-tick-bg;
+      }
+  }
+}
+
+// Helpers
+@mixin menu-hor-item-base($item) {
+	// item
+	@include attr(margin, get($item, self, margin));
+	@include attr(padding, get($item, self, padding));
+
+	// link
+	> .menu-link {
+		transition: all .3s ease;
+		cursor: pointer;
+		@include attr(padding, get($item, link, self, padding));
+		@include attr(margin, get($item, link, self, margin));
+
+		&:hover {
+			transition: all .3s ease;
+		}
+
+		// link icon
+		.menu-icon {
+			font-size: get($item, link, icon, font-size);
+			width: get($item, link, icon, width);
+			padding: get($item, link, icon, padding);
+			line-height: 0;
+
+			// duo-tone svg icon
+			&.svg-icon {
+				@include attr(height, get($item, link, icon, svg-width));
+				@include attr(width, get($item, link, icon, svg-width));
+				margin-left: -2px;
+			}
+		}
+
+		// link bullet
+		.menu-bullet {
+			width: get($item, link, bullet, self, width);
+
+			@if has($item, link, bullet, padding) {
+				padding: get($item, link, bullet, padding);
+			}
+
+			> span {
+				vertical-align: middle;
+				display: inline-block;
+			}
+
+			&.menu-bullet-dot {
+				> span {
+					width: get($item, link, bullet, dot, size);
+					height: get($item, link, bullet, dot, size);
+					border-radius: 100%;
+				}
+			}
+
+			&.menu-bullet-line {
+				> span {
+					width: get($item, link, bullet, line, width);
+					height: get($item, link, bullet, line, height);
+				}
+			}
+		}
+
+		// link text
+		.menu-text {
+			font-weight: get($item, link, text, font-weight);
+			font-size: get($item, link, text, font-size);
+			text-transform: get($item, link, text, font-transform);
+
+			@if has($item, link, text, padding) {
+				padding: get($item, link, text, padding);
+			}
+		}
+
+		// link label
+		.menu-label {
+			padding: get($item, link, label, padding);
+			justify-content: get($item, link, label, align);
+		}
+
+		// link arrow icon
+		.menu-arrow {
+			font-size: get($item, link, arrow, font-size);
+			width: get($item, link, arrow, width);
+			justify-content: flex-end;
+
+			@if has($item, link, arrow, padding) {
+				padding: get($item, link, arrow, padding);
+			}
+		}
+
+		.menu-arrow {
+			&:before {
+				@include ki(get($ki-types, 'arrowNext'));
+
+				[direction="rtl"] & {
+					content: get($ki-types, 'arrowBack') !important;
+				}
+			}
+		}
+
+		// link border radius
+		@include border-radius(get($item, link, self, border-radius));
+
+		// menu root level "here" arrow
+		.menu-item-here {
+			display: none;
+		}
+	}
+}
+
+@mixin menu-hor-item-theme($item) {
+	// link
+	> .menu-link {
+		background-color: get($item, link, self, bg-color, default);
+
+		// link icon
+		.menu-icon {
+			color: get($item, link, icon, font-color, default);
+
+			// Due-tone icon
+			&.svg-icon {
+				@include svg-icon-color(get($item, link, icon, font-color, default));
+			}
+		}
+
+		// link bullet
+		.menu-bullet {
+			&.menu-bullet-dot {
+				> span {
+					background-color: get($item, link, bullet, dot, bg-color, default);
+				}
+			}
+
+			&.menu-bullet-line {
+				> span {
+					background-color: get($item, link, bullet, line, bg-color, default);
+				}
+			}
+		}
+
+		// link text
+		.menu-text {
+			color: get($item, link, text, font-color, default);
+
+			@if has($item, link, text, font-weight) {
+				font-weight: get($item, link, text, font-weight);
+			}
+		}
+
+		// link arrow icon
+		.menu-arrow {
+			color: get($item, link, arrow, font-color, default);
+		}
+	}
+
+	// active state
+	&.menu-item-active {
+		> .menu-link {
+			// link bg color
+			background-color: get($item, link, self, bg-color, active);
+
+			// link icon
+			.menu-icon {
+				color: get($item, link, icon, font-color, active);
+
+				// Due-tone icon
+				&.svg-icon {
+					@include svg-icon-color(get($item, link, icon, font-color, active));
+				}
+			}
+
+			// link bullet
+			.menu-bullet {
+				&.menu-bullet-dot {
+					> span {
+						background-color: get($item, link, bullet, dot, bg-color, active);
+					}
+				}
+
+				&.menu-bullet-line {
+					> span {
+						background-color: get($item, link, bullet, line, bg-color, active);
+					}
+				}
+			}
+
+			.menu-text {
+				color: get($item, link, text, font-color, active);
+			}
+
+			// link arrow icon
+			> .menu-arrow {
+				color: get($item, link, arrow, font-color, active);
+			}
+		}
+	}
+
+	// here state
+	&.menu-item-here {
+		> .menu-link {
+			// link bg color
+			background-color: get($item, link, self, bg-color, here);
+
+			// link icon
+			.menu-icon {
+				color: get($item, link, icon, font-color, here);
+
+				// Due-tone icon
+				&.svg-icon {
+					@include svg-icon-color(get($item, link, icon, font-color, here));
+				}
+			}
+
+			// link bullet
+			.menu-bullet {
+				&.menu-bullet-dot {
+					> span {
+						background-color: get($item, link, bullet, dot, bg-color, here);
+					}
+				}
+
+				&.menu-bullet-line {
+					> span {
+						background-color: get($item, link, bullet, line, bg-color, here);
+					}
+				}
+			}
+
+			.menu-text {
+				color: get($item, link, text, font-color, here);
+			}
+
+			// link arrow icon
+			> .menu-arrow {
+				color: get($item, link, arrow, font-color, here);
+			}
+		}
+	}
+
+	// hover state
+	&:hover:not(.menu-item-here):not(.menu-item-active),
+	&.menu-item-hover:not(.menu-item-here):not(.menu-item-active) {
+		> .menu-link {
+			// link bg color
+			background-color: get($item, link, self, bg-color, hover);
+
+			// link icon
+			.menu-icon {
+				color: get($item, link, icon, font-color, hover);
+
+				// Due-tone icon
+				&.svg-icon {
+					@include svg-icon-color(get($item, link, icon, font-color, hover));
+				}
+			}
+
+			// link bullet
+			.menu-bullet {
+				&.menu-bullet-dot {
+					> span {
+						background-color: get($item, link, bullet, dot, bg-color, hover);
+					}
+				}
+
+				&.menu-bullet-line {
+					> span {
+						background-color: get($item, link, bullet, line, bg-color, hover);
+					}
+				}
+			}
+
+			// link text
+			.menu-text {
+				color: get($item, link, text, font-color, hover);
+			}
+
+			// link arrow icon
+			> .menu-arrow {
+				color: get($item, link, arrow, font-color, hover);
+			}
+		}
+	}
+}
+
+@mixin menu-hor-item-heading-base($item) {
+	// heading
+	padding: get($item, self, padding);
+
+	// text
+	> .menu-text {
+		font-weight: get($item, caption, text, font-weight);
+		font-size: get($item, caption, text, font-size);
+		text-transform: get($item, caption, text, font-transform);
+	}
+
+	// icon
+	> .menu-icon {
+		font-size: get($item, caption, icon, font-size);
+		flex: 0 0 get($item, caption, icon, width);
+		justify-content: get($item, caption, icon, align);
+		padding: get($item, caption, icon, padding);
+	}
+
+	// label
+	.menu-label {
+		padding: get($item, caption, label, padding);
+		text-align: get($item, caption, label, align);
+	}
+}
+
+@mixin menu-hor-item-heading-theme($item) {
+	// text
+	> .menu-text {
+		color: get($item, caption, text, font-color);
+	}
+
+	// icon
+	> .menu-icon {
+		color: get($item, caption, icon, font-color);
+	}
+}
+
+@mixin menu-hor-submenu-width($config) {
+	@include media-breakpoint-between(lg, xl) {
+		.#{get($config, base, class)} {
+			.menu-nav {
+				// menu root item
+				> .menu-item {
+					// general submenu
+					.menu-submenu {
+						&.menu-submenu-full,
+						&.menu-submenu-fixed,
+						&.menu-submenu-auto,
+						&.menu-submenu-auto.menu-submenu-mimimal-desktop-wide,
+						&.menu-submenu-fixed-xl,
+						&.menu-submenu-fixed-xxl {
+							margin: 0 auto;
+							width: auto;
+							left: 20px;
+							right: 20px;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Responsive container widths
+	@each $breakpoint, $width in $grid-breakpoints {
+	    @media (min-width: $width) {
+	    	.#{get($config, base, class)} {
+				.menu-nav {
+					// menu root item
+					> .menu-item {
+						// general submenu
+						.menu-submenu.menu-submenu-fixed-#{$breakpoint} {
+					        width: $width - 60px;
+					    }
+					}
+				}
+			}
+	    }
+	}
+}
+
+@mixin menu-hor-base($config) {
+	.#{get($config, base, class)} {
+		display: flex;
+		align-items: stretch;
+		height: 100%;
+	    margin: get($config, build, layout, self, margin);
+
+    	// general menu
+		.menu-nav {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			align-items: stretch;
+
+			// menu root item
+			> .menu-item {
+				// general link
+				.menu-link {
+					display: flex;
+					text-decoration: none;
+					position: relative;
+					vertical-align: middle;
+					align-items: stretch;
+					outline: none !important;
+					text-decoration: none;
+					cursor: pointer;
+
+					.menu-text {
+						display: flex;
+						align-items: center;
+						flex-grow: 1;
+						padding: 0;
+					}
+
+					.menu-label {
+						display: flex;
+						align-items: center;
+						line-height: 0;
+						white-space: nowrap;
+					}
+
+					// link icon
+					.menu-icon {
+						display: flex;
+						align-items: center;
+					}
+
+					// sub menu link arrow icon
+					.menu-arrow {
+						display: flex;
+						align-items: center;
+					}
+
+					&:hover,
+					&:active,
+					&:focus {
+						text-decoration: none;
+					}
+				}
+
+				// primary link
+				> .menu-link {
+					> .menu-text {
+						width: auto;
+					}
+				}
+
+				// icon only menu item
+				&.menu-item-icon {
+					> .menu-link {
+						justify-content: center;
+
+						> .menu-icon {
+							justify-content: center;
+						}
+					}
+				}
+
+				// general submenu
+				.menu-submenu {
+					display: none;
+					z-index: get($config, build, layout, item, submenu, self, zindex);
+					position: absolute;
+					top: 100%;
+
+					@include fix-animation-lags();
+					@include border-radius(get($config, build, layout, item, submenu, self, border-radius));
+					@include attr(margin, get($config, build, layout, item, submenu, self, margin));
+					@include attr(padding, get($config, build, layout, item, submenu, self, padding, classic));
+
+					.menu-scroll {
+						position: relative;
+						overflow: hidden;
+						display: flex;
+						flex-direction: column;
+						flex-grow: 1;
+					}
+
+					.menu-subnav {
+						list-style: none !important;
+						padding: 0;
+						margin: 0;
+					}
+
+					// classic submenu
+					& {
+						width: get($config, build, layout, item, submenu, self, width, classic);
+						margin: 0 auto;
+						left: auto;
+		    			right: auto;
+					}
+
+					// full width
+					&.menu-submenu-full {
+						margin: 0 auto;
+						width: auto;
+						left: get($config, build, layout, item, submenu, self, width, full, offset);
+						right: get($config, build, layout, item, submenu, self, width, full, offset);
+					}
+
+					// fixed width options
+					&.menu-submenu-fixed {
+						left: auto;
+						right: auto;
+						width: auto;
+					}
+
+					// alignment right
+					&.menu-submenu-right {
+						right: 0;
+						left: auto;
+
+						&.menu-submenu-pull {
+							margin-right: -40px;
+						}
+					}
+
+					// alignment left
+					&.menu-submenu-left {
+						right: auto;
+						left: 0;
+
+						&.menu-submenu-pull {
+							margin-left: -40px;
+						}
+					}
+
+					// alignment center
+					&.menu-submenu-center {
+						margin: 0 auto;
+						left: 0;
+		    			right: 0;
+					}
+
+					// sub menu dropdown
+					> .menu-subnav {
+						> .menu-item.menu-item-submenu {
+							position: relative;
+							padding: 0;
+							margin: 0;
+
+							> .menu-submenu {
+								top:0;
+								display: none;
+								margin-top: 0;
+
+								&.menu-submenu-left {
+									right: 100%;
+									left: auto;
+								}
+
+								&.menu-submenu-right {
+									left: 100%;
+									right: auto;
+								}
+							}
+
+							// Dropup Submenu
+							&.menu-item-dropup {
+								> .menu-submenu {
+									top: auto;
+									bottom: 0;
+								}
+							}
+						}
+					}
+
+					// mega menu content
+					.menu-content {
+						display: flex;
+						list-style: none;
+						padding: 0;
+						margin: 0;
+
+						> .menu-item {
+							padding: 0;
+							margin: 0;
+							display: flex;
+							flex-direction: column;
+					    	flex-grow: 1;
+
+					    	&:last-child {
+					    		border-right: 0;
+					    	}
+						}
+					}
+
+					// mega heading
+					.menu-heading {
+						display: flex;
+						align-items: center;
+						padding: 0;
+						margin: 0;
+						text-decoration: none;
+						position: relative;
+
+						.menu-text {
+							display: flex;
+							align-items: center;
+							flex-grow: 1
+						}
+
+						.menu-label {
+							display: flex;
+							align-items: center;
+							white-space: nowrap;
+						}
+
+						// link icon
+						.menu-icon {
+							display: flex;
+							align-items: center;
+							font-size: 18px;
+							padding: 0 10px 0 0;
+						}
+
+						// sub menu link arrow icon
+						.menu-arrow {
+							display: flex;
+							align-items: center;
+							padding: 0 0 0 10px;
+						}
+					}
+				}
+
+				.menu-inner,
+				.menu-subnav {
+					list-style: none;
+					margin: 0;
+					padding: 0;
+
+					> .menu-item {
+						display: flex;
+						flex-grow: 1;
+						margin: 0;
+						padding: 10px 20px;
+
+						.menu-link {
+							display: flex;
+							align-items: center;
+							flex-grow: 1;
+							text-decoration: none;
+							position: relative;
+
+							&:hover,
+							&:active,
+							&:focus {
+								outline: none;
+								text-decoration: none;
+							}
+
+							.menu-text {
+								display: flex;
+								align-items: center;
+								font-weight: get($config, build, layout, item, submenu, item, link, text, font-weight);
+								color: get($config, build, layout, item, submenu, item, link, text, font-color, default);
+								font-size: get($config, build, layout, item, submenu, item, link, text, font-size);
+								text-transform: get($config, build, layout, item, submenu, item, link, text, font-transform);
+							}
+
+							.menu-label {
+								display: flex;
+								align-items: center;
+								white-space: nowrap;
+								padding: get($config, build, layout, item, submenu, item, link, label, padding);
+								text-align: get($config, build, layout, item, submenu, item, link, label, align);
+							}
+
+							// link icon
+							.menu-icon {
+								display: flex;
+								align-items: center;
+								flex: 0 0 get($config, build, layout, item, submenu, item, link, icon, width);
+								padding: get($config, build, layout, item, submenu, item, link, icon, padding);
+								color: get($config, build, layout, item, submenu, item, link, icon, font-color, default);
+								font-size: get($config, build, layout, item, submenu, item, link, icon, font-size);
+								text-align: get($config, build, layout, item, submenu, item, link, icon, align);
+							}
+
+							// menu item link's icon part
+							.menu-bullet {
+								display: flex;
+								align-items: center;
+								line-height: 0;
+							}
+
+							// sub menu link arrow icon
+							.menu-arrow {
+								display: flex;
+								align-items: center;
+								padding: get($config, build, layout, item, submenu, item, link, arrow, padding);
+							}
+						}
+					}
+				}
+
+				.menu-inner {
+					padding: 0;
+				}
+
+				// sub dropdown menu space
+				@if has($config, build, layout, item, submenu, self, space) {
+					.menu-submenu {
+						.menu-submenu {
+							margin-left: get($config, build, layout, item, submenu, self, space);
+
+							&.menu-submenu-left {
+								margin-right: get($config, build, layout, item, submenu, self, space);
+							}
+						}
+					}
+				}
+
+				// tabs integration
+				&.menu-item-submenu.menu-item-tabs > .menu-submenu > .menu-subnav > .menu-item.menu-item-submenu {
+					> .menu-submenu {
+						top:100%;
+
+						&.menu-submenu-left {
+							right: 100%;
+							left: 0;
+						}
+
+						&.menu-submenu-right {
+							left: 100%;
+							right: 0;
+						}
+					}
+				}
+			}
+		}
+
+		// Root Menu
+		.menu-nav {
+			> .menu-item {
+				display: flex;
+				align-items: center;
+				padding: get($config, build, layout, item, self, padding);
+
+				// Root Menu arrow
+				> .menu-link {
+					> .menu-arrow {
+						display: none;
+
+						&:before {
+							content: "#{get($ki-types, arrowDown)}" !important;
+						}
+					}
+				}
+
+				// used for classic submenus
+				&.menu-item-rel {
+					position: relative;
+				}
+
+				@include menu-hor-item-base( get($config, build, layout, item) );
+
+				// submenu
+				.menu-submenu {
+					padding: get($config, build, layout, item, submenu, self, padding, megamenu);
+					@include border-radius(get($config, build, layout, item, submenu, self, border-radius));
+
+					> .menu-subnav {
+						> .menu-item {
+							@include menu-hor-item-base(get($config, build, layout, item, submenu, item));
+						}
+
+						// mega submenu
+						.menu-content {
+							align-items: stretch;
+							// separator
+							> .menu-item {
+								flex-grow: 1;
+								flex-basis: 0;
+
+								&:last-child {
+									border-right:0 !important;
+								}
+							}
+
+							// heading
+							.menu-heading {
+								@include menu-hor-item-heading-base(get($config, build, layout, item, submenu, item, column, heading));
+							}
+
+							// mega menu
+							.menu-inner {
+								padding: get($config, build, layout, item, submenu, item, column, self, padding);
+
+								> .menu-item {
+									@include menu-hor-item-base(get($config, build, layout, item, submenu, item));
+								}
+							}
+						}
+					}
+
+					&.menu-submenu-classic {
+						padding: get($config, build, layout, item, submenu, self, padding, classic);
+						> .menu-subnav {
+
+						}
+					}
+
+					// inline submenu
+					&.menu-submenu-inline {
+						display: flex;
+						flex: 0 0 auto;
+
+						> .menu-subnav {
+							> .menu-item {
+								display: flex;
+								padding: 5px 0;
+							}
+						}
+					}
+				}
+			}
+
+			// general submenu hover effect
+			.menu-item {
+				// menu resize item
+				&.menu-item-resize {
+					display: none;
+				}
+
+				// menu item hover
+				&.menu-item-active-tab,
+				&.menu-item-hover {
+					.menu-submenu {
+						display: block;
+						animation: #{get($config, base, class)}-submenu-fade-in .3s ease 1, #{get($config, base, class)}-submenu-move-down .3s ease-out 1;
+
+						// ie8-11 versions hack
+                    	@include for-ie11 {
+                        	animation: none;
+                    	}
+
+						> .menu-subnav > .menu-item.menu-item-hover {
+							> .menu-submenu {
+								display: block;
+								animation: #{get($config, base, class)}-submenu-fade-in .3s ease 1, #{get($config, base, class)}-submenu-move-up .3s ease-out 1;
+
+								// ie8-11 versions hack
+                    			@include for-ie11 {
+                        			animation: none;
+                    			}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// Root Menu arrow display
+		&.#{get($config, base, class)}-root-arrow {
+			.menu-nav {
+				> .menu-item {
+					> .menu-link {
+						> .menu-arrow {
+							display: flex;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@mixin menu-hor-theme($base-class, $config) {
+	.#{$base-class} {
+		// root level items
+		@if has($config, item, link) {
+			.menu-nav {
+				> .menu-item {
+					@if get($config, item, self) {
+						&.menu-item-hover,
+						&:hover {
+							background-color: get($config, item, self, bg-color, hover);
+						}
+
+						&.menu-item-here {
+							background-color: get($config, item, self, bg-color, here);
+						}
+
+						&.menu-item-open,
+						&.menu-item-active {
+							background-color: get($config, item, self, bg-color, active);
+						}
+					}
+
+					@include menu-hor-item-theme(get($config, item));
+				}
+			}
+		}
+
+		// submenu level items
+		.menu-nav {
+			> .menu-item {
+				// classic submenu
+				.menu-submenu {
+					background-color: get($config, item, submenu, self, bg-color);
+					box-shadow: get($config, item, submenu, self, box-shadow);
+
+					> .menu-subnav {
+						// submenu item
+						> .menu-item {
+							@include menu-hor-item-theme(get($config, item, submenu, item));
+						}
+
+						// mega submenu
+						.menu-content {
+							// separator
+							> .menu-item {
+								border-right: get($config, item, submenu, item, column, separator, border);
+							}
+
+							// heading
+							.menu-heading {
+								@include menu-hor-item-heading-theme(get($config, item, submenu, item, column, heading));
+							}
+
+							// mega menu
+							.menu-inner {
+								> .menu-item {
+									@include menu-hor-item-theme(get($config, item, submenu, item));
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+// Build Theme
+@mixin menu-hor-build-theme($config, $theme) {
+	$theme-config: ();
+
+	@if ($theme == default) {
+		$theme-config: get($config, build, theme);
+	} @else {
+		$theme-config: get($config, build, themes, $theme);
+	}
+
+	// Base vertical menu
+	@if (get($config, base, mode) == general) {
+
+		@include menu-hor-theme(get($config, base, class), $theme-config);
+
+	} @else if (get($config, base, mode) == desktop) {
+		// Desktop Mode
+		@include media-breakpoint-up(lg) {
+			@include menu-hor-theme(get($config, base, class), $theme-config);
+		}
+
+	} @else if (get($config, base, mode) == tablet-and-mobile) {
+		// Tablet & Mobile Modes
+		@include media-breakpoint-down(md) {
+			@include menu-hor-theme(get($config, base, class), $theme-config);
+		}
+	}
+}
+
+// Build Layout
+@mixin menu-hor-build-layout($config) {
+	// Base vertical menu
+	@if (get($config, base, mode) == general) {
+
+		@include menu-hor-base($config);
+
+	} @else if (get($config, base, mode) == desktop) {
+
+		// Desktop Mode
+		@include media-breakpoint-up(lg) {
+			@include menu-hor-base($config);
+		}
+
+		@include menu-hor-submenu-width($config);
+
+	} @else if (get($config, base, mode) == tablet-and-mobile) {
+		// Tablet & Mobile Modes
+		@include media-breakpoint-down(md) {
+			@include menu-hor-base($config);
+		}
+	}
+
+	// Horizontal Menu Hoverable Submenu Animations
+	@keyframes #{get($config, base, class)}-submenu-fade-out {
+	    from   { opacity: 1; }
+	    to { opacity: 0; }
+	}
+
+	@keyframes #{get($config, base, class)}-submenu-fade-in {
+	    from   { opacity: 0; }
+	    to { opacity: 1; }
+	}
+
+	@keyframes #{get($config, base, class)}-submenu-move-up {
+	    from   { margin-top: get($config, build, layout, item, submenu, self, animation, offset); }
+	    to { margin-top: 0; }
+	}
+
+	@keyframes #{get($config, base, class)}-submenu-move-down {
+	    from   { margin-top: -(get($config, build, layout, item, submenu, self, animation, offset)); }
+	    to { margin-top: 0; }
+	}
+}
+
+
+// Item
+@mixin menu-ver-item-base($item) {
+	// item
+	@include attr(margin, get($item, self, margin));
+	@include attr(padding, get($item, self, padding));
+
+	// item link and heading
+	> .menu-heading,
+	> .menu-link {
+		cursor: pointer;
+		@include border-radius(get($item, link, self, border-radius));
+		// link height
+		min-height: get($item, link, self, height);
+
+		// link margin
+		@include attr(margin, get($item, link, self, margin));
+
+		// menu item link's text part
+		.menu-text {
+			font-weight: get($item, link, text, font-weight);
+			font-size: get($item, link, text, font-size);
+			text-transform: get($item, link, text, font-transform);
+		}
+
+		// menu item link's icon
+		.menu-icon {
+			text-align: get($item, link, icon, align);
+			flex: 0 0 get($item, link, icon, width);
+			font-size: get($item, link, icon, font-size);
+
+			// duo-tone svg icon
+			svg {
+				@include attr(height, get($item, link, icon, svg-width));
+				@include attr(width, get($item, link, icon, svg-width));
+				margin-left: -2px;
+			}
+		}
+
+		// menu item link's bullet
+		.menu-bullet {
+			vertical-align: middle;
+			text-align: left;
+			flex: 0 0 get($item, link, bullet, self, width);
+
+			> span {
+				vertical-align: middle;
+				display: inline-block;
+			}
+
+			&.menu-bullet-dot {
+				> span {
+					width: get($item, link, bullet, dot, size);
+					height: get($item, link, bullet, dot, size);
+					border-radius: 100%;
+				}
+			}
+
+			&.menu-bullet-line {
+				> span {
+					width: get($item, link, bullet, line, width);
+					height: get($item, link, bullet, line, height);
+				}
+			}
+		}
+
+		// menu item link's icon part
+		.menu-label {
+			padding: get($item, link, label, padding);
+			text-align: get($item, link, label, align);
+		}
+
+		// menu item link's arrow part
+		.menu-arrow {
+			text-align: get($item, link, arrow, align);
+			flex: 0 0 get($item, link, arrow, width);
+			font-size: get($item, link, arrow, font-size);
+
+			&:before {
+				transition: get($item, link, arrow, transition);
+				@include ki(get($ki-types, arrowNext));
+
+				[direction="rtl"] & {
+					content: "#{get($ki-types, arrowBack)}" !important;
+				}
+			}
+		}
+
+		// menu root level "here" arrow
+		.menu-item-here {
+			display: none;
+		}
+	}
+
+	// item link open state
+	&.menu-item-open {
+		> .menu-heading,
+		> .menu-link {
+			// menu item link's arrow part
+			.menu-arrow {
+				&:before {
+					transition: get($item, link, arrow, transition);
+				}
+			}
+		}
+	}
+}
+
+@mixin menu-ver-item-theme($item) {
+	// item
+	@include attr(background-color, get($item, self, bg-color, default));
+
+	// item link and heading
+	> .menu-heading,
+	> .menu-link {
+		// menu item link's text part
+		.menu-text {
+			@include attr(color, get($item, link, text, font-color, default));
+			@if has($item, link, text, font-weight) {
+				font-weight: get($item, link, text, font-weight);
+			}
+		}
+
+		// menu item link's icon
+		.menu-icon {
+			@include attr(color, get($item, link, icon, font-color, default));
+
+			// Due-tone icon
+			&.svg-icon {
+				@include svg-icon-color(get($item, link, icon, font-color, default));
+			}
+		}
+
+		// menu item link's bullet
+		.menu-bullet {
+			&.menu-bullet-dot {
+				> span {
+					@include attr(background-color, get($item, link, bullet, dot, bg-color, default));
+				}
+			}
+
+			&.menu-bullet-line {
+				> span {
+					@include attr(background-color, get($item, link, bullet, line, bg-color, default));
+				}
+			}
+		}
+
+		// menu item link's arrow part
+		.menu-arrow {
+			@include attr(color, get($item, link, arrow, font-color, default));
+		}
+	}
+
+	// item link open state
+	&.menu-item-open {
+		transition: background-color .3s;
+		@include attr(background-color, get($item, self, bg-color, open));
+
+		> .menu-heading,
+		> .menu-link {
+			@include attr(background-color, get($item, link, self, bg-color, open));
+
+			// menu item link's text part
+			.menu-text {
+				@include attr(color, get($item, link, text, font-color, open));
+			}
+
+			// menu item link's icon part
+			.menu-icon {
+				@include attr(color, get($item, link, icon, font-color, open));
+
+				// Due-tone icon
+				&.svg-icon {
+					@include svg-icon-color(get($item, link, icon, font-color, open));
+				}
+			}
+
+			// menu item link's bullet
+			.menu-bullet {
+				&.menu-bullet-dot {
+					> span {
+						@include attr(background-color, get($item, link, bullet, dot, bg-color, open));
+					}
+				}
+
+				&.menu-bullet-line {
+					> span {
+						@include attr(background-color, get($item, link, bullet, line, bg-color, open));
+					}
+				}
+			}
+
+			// menu item link's arrow part
+			.menu-arrow {
+				@include attr(color, get($item, link, arrow, font-color, open));
+			}
+		}
+	}
+
+	// item link open state
+	&.menu-item-here {
+		transition: background-color .3s;
+		@include attr(background-color, get($item, self, bg-color, here));
+
+		> .menu-heading,
+		> .menu-link {
+			@include attr(background-color, get($item, link, self, bg-color, here));
+
+			// menu item link's text part
+			.menu-text {
+				@include attr(color, get($item, link, text, font-color, here));
+			}
+
+			// menu item link's icon part
+			.menu-icon {
+				@include attr(color, get($item, link, icon, font-color, here));
+
+				// Due-tone icon
+				&.svg-icon {
+					@include svg-icon-color(get($item, link, icon, font-color, here));
+				}
+			}
+
+			// menu item link's bullet
+			.menu-bullet {
+				&.menu-bullet-dot {
+					> span {
+						@include attr(background-color, get($item, link, bullet, dot, bg-color, here));
+					}
+				}
+
+				&.menu-bullet-line {
+					> span {
+						@include attr(background-color, get($item, link, bullet, line, bg-color, here));
+					}
+				}
+			}
+
+			// menu item link's arrow part
+			.menu-arrow {
+				@include attr(color, get($item, link, arrow, font-color, here));
+			}
+		}
+	}
+
+	// item link active state
+	&.menu-item-active {
+		transition: background-color .3s;
+		@include attr(background-color, get($item, self, bg-color, active));
+
+		> .menu-heading,
+		> .menu-link {
+			@include attr(background-color, get($item, link, self, bg-color, active));
+
+			// menu item link's text part
+			.menu-text {
+				@include attr(color, get($item, link, text, font-color, active));
+			}
+
+			// menu item link's icon part
+			.menu-icon {
+				@include attr(color, get($item, link, icon, font-color, active));
+
+				// Due-tone icon
+				&.svg-icon {
+					@include svg-icon-color(get($item, link, icon, font-color, active));
+				}
+			}
+
+			// menu item link's bullet
+			.menu-bullet {
+				&.menu-bullet-dot {
+					> span {
+						@include attr(background-color, get($item, link, bullet, dot, bg-color, active));
+					}
+				}
+
+				&.menu-bullet-line {
+					> span {
+						@include attr(background-color, get($item, link, bullet, line, bg-color, active));
+					}
+				}
+			}
+
+			// menu item link's arrow part
+			.menu-arrow {
+				@include attr(color, get($item, link, arrow, font-color, active));
+			}
+		}
+	}
+
+	// item link hover state
+	&:not(.menu-item-parent):not(.menu-item-open):not(.menu-item-here):not(.menu-item-active):hover {
+		transition: background-color .3s;
+		@include attr(background-color, get($item, self, bg-color, hover));
+
+		> .menu-heading,
+		> .menu-link {
+			@include attr(background-color, get($item, link, self, bg-color, hover));
+
+			// menu item link's text part
+			.menu-text {
+				@include attr(color, get($item, link, text, font-color, hover));
+			}
+
+			// menu item link's icon part
+			.menu-icon {
+				@include attr(color, get($item, link, icon, font-color, hover));
+
+				// Due-tone icon
+				&.svg-icon {
+					@include svg-icon-color(get($item, link, icon, font-color, hover));
+				}
+			}
+
+			// menu item link's bullet
+			.menu-bullet {
+				&.menu-bullet-dot {
+					> span {
+						@include attr(background-color, get($item, link, bullet, dot, bg-color, hover));
+					}
+				}
+
+				&.menu-bullet-line {
+					> span {
+						@include attr(background-color, get($item, link, bullet, line, bg-color, hover));
+					}
+				}
+			}
+
+			// menu item link's arrow part
+			.menu-arrow {
+				@include attr(color, get($item, link, arrow, font-color, hover));
+			}
+		}
+	}
+}
+
+// Section
+@mixin menu-ver-section-base($section) {
+	margin: get($section, self, margin);
+	height: get($section, self, height);
+
+	.menu-text {
+		font-size: get($section, text, font-size);
+		font-weight: get($section, text, font-weight);
+		text-transform: get($section, text, font-transform);
+		letter-spacing: get($section, text, letter-spacing);
+	}
+
+	@if has($section, icon) {
+		.menu-icon {
+			padding: get($section, icon, padding);
+		}
+	}
+}
+
+@mixin menu-ver-section-theme($section) {
+	.menu-text {
+		@include attr(color, get($section, text, font-color));
+	}
+
+	@if has($section, icon) {
+		.menu-icon {
+			@include attr(color, get($section, icon, font-color));
+		}
+	}
+}
+
+// Separator
+@mixin menu-ver-separator-base($separator) {
+	margin: get($separator, margin);
+
+	.menu-separator-marginless {
+		margin: 0;
+	}
+}
+
+@mixin menu-ver-separator-theme($separator) {
+	@include attr(border-bottom, get($separator, border));
+}
+
+// Minimize Parent Item
+@mixin menu-ver-minimize-parent-item-base($item) {
+	// item
+	margin: get($item, self, margin);
+
+	// item link and heading
+	> .menu-link {
+		height: get($item, link, self, height);
+		padding: get($item, link, self, padding);
+
+		// menu item link's text part
+		.menu-text {
+			font-weight: get($item, link, text, font-weight);
+			font-size: get($item, link, text, font-size);
+			text-transform: get($item, link, text, font-transform);
+			cursor: text !important;
+		}
+
+		// menu item link's icon part
+		.menu-label {
+			padding: get($item, link, label, padding);
+			text-align: get($item, link, label, align);
+		}
+	}
+}
+
+@mixin menu-ver-minimize-parent-item-theme($item) {
+	// item
+	@include attr(background-color, get($item, self, bg-color, default));
+
+	// item link and heading
+	> .menu-link {
+		// menu item link's text part
+		> .menu-text {
+			@include attr(color, get($item, link, text, font-color, default));
+		}
+	}
+}
+
+// Base
+@mixin menu-ver-base($base-config, $layout) {
+	.#{get($base-config, class)} {
+		// menu nav
+		.menu-nav {
+			margin: 0;
+			list-style: none;
+			padding: get($layout, default, self, padding);
+
+			// Base markup
+			.menu-scroll {
+				position: relative;
+				overflow: hidden;
+				display: flex;
+				flex-direction: column;
+				flex-grow: 1;
+			}
+
+			.menu-subnav {
+				display: flex;
+				flex-direction: column;
+				flex-grow: 1;
+				padding: 0;
+				margin: 0;
+				list-style: none !important;
+			}
+
+			// general submenu
+			.menu-inner,
+			.menu-submenu {
+				display: none;
+				float: none;
+				margin: 0;
+				padding: 0;
+
+				@if get($base-config, mode) == "tablet-and-mobile" or get($base-config, mode) == "mobile" {
+					width: auto !important;
+				}
+
+				// Content
+				.menu-content {
+					padding: 0;
+					margin: 0;
+
+					> .menu-item {
+						padding: 0;
+						margin: 0;
+						list-style: none;
+
+						&.menu-headingless {
+							> .menu-inner {
+								display: flex;
+
+								> li > .menu-link {
+	   								margin: 0;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			// general item
+			.menu-item {
+				display: flex;
+				flex-direction: column;
+				flex-grow: 1;
+				float: none;
+				padding: 0;
+
+				// item link and heading
+				> .menu-heading,
+				> .menu-link {
+					display: flex;
+					flex-grow: 1;
+					align-items: stretch;
+					margin: 0;
+					padding: 0;
+					text-decoration: none;
+					position: relative;
+					outline: none;
+
+					&:hover {
+						text-decoration: none;
+						cursor: pointer;
+					}
+
+					.menu-text {
+						display: flex;
+						align-items: center;
+						flex-grow: 1;
+						padding: 0;
+					}
+
+					.menu-label {
+						display: flex;
+						align-items: center;
+						white-space: nowrap;
+					}
+
+					// menu item link's icon part
+					.menu-icon {
+						display: flex;
+						align-items: center;
+						line-height: 0;
+					}
+
+					// menu item link's icon part
+					.menu-bullet {
+						display: flex;
+						align-items: center;
+						line-height: 0;
+					}
+
+					// menu item link's arrow part
+					.menu-arrow {
+						display: flex;
+						align-items: center;
+						justify-content: flex-end;
+						line-height: 0;
+
+						&:before {
+							-webkit-transform: translate3d(0,0,0);
+						}
+					}
+				}
+
+				// item link open state
+				&.menu-item-open {
+					> .menu-heading,
+					> .menu-link {
+						// menu item link's arrow part
+						> .menu-arrow {
+							&:before {
+								transform: rotateZ(90deg)#{'/*rtl:ignore*/'};
+
+								[direction="rtl"] & {
+									transform: rotateZ(-90deg)#{'/*rtl:ignore*/'};
+								}
+							}
+						}
+					}
+
+					> .menu-submenu,
+					> .menu-inner {
+						display: flex;
+						flex-grow: 1;
+						flex-direction: column;
+					}
+				}
+
+				// submenu items
+				.menu-submenu {
+					// submenu item
+					.menu-item {
+						// item link and heading
+						> .menu-heading,
+						> .menu-link {
+							padding: get($layout, default, item, submenu, item, link, padding);
+						}
+					}
+
+					// parent item used for minimized menu's dropdown submenus
+					.menu-item-parent {
+						display: none;
+					}
+				}
+			}
+
+			// general section
+			.menu-section {
+				display: flex;
+				padding: get($layout, default, section, self, padding);
+
+				&.menu-section-first {
+					margin-top: 0 !important;
+				}
+
+				.menu-text {
+					display:flex;
+					margin: 0;
+					padding: 0;
+					align-items: center;
+				}
+
+				.menu-icon {
+					display: none;
+					align-items: center;
+					justify-content: center;
+				}
+			}
+
+			// general separator
+			.menu-separator {
+				height: 0;
+				overflow: hidden;
+
+				&.menu-separator-marginless {
+					margin: 0;
+				}
+			}
+
+			// Custom markup
+			// menu item
+			> .menu-item {
+				position: relative;
+				@include menu-ver-item-base(get($layout, default, item));
+
+				.menu-submenu {
+					.menu-subnav {
+						@include attr(margin, get($layout, default, item, submenu, self, margin));
+						@include attr(padding, get($layout, default, item, submenu, self, padding));
+					}
+
+					// menu item
+					.menu-item {
+						@include menu-ver-item-base(get($layout, default, item, submenu, item));
+					}
+
+					// menu section
+					.menu-section {
+						@include menu-ver-section-base(get($layout, default, item, submenu, section));
+					}
+
+					// menu item separator
+					.menu-separator {
+						@include menu-ver-separator-base(get($layout, default, item, submenu, separator));
+					}
+				}
+			}
+
+			// menu section
+			> .menu-section {
+				@include menu-ver-section-base(get($layout, default, section));
+			}
+
+			// menu item separator
+			> .menu-separator {
+				@include menu-ver-separator-base(get($layout, default, separator));
+			}
+
+			// submenu link paddings and indentions
+			// item
+			$item-link-padding: get($layout, default, item, link, self, padding);
+			$item-section-padding: get($layout, default, section, self, padding);
+
+			// item submenu
+			$item-submenu-padding-left: get($layout, default, item, submenu, item, link, self, padding-x);
+
+			$item-submenu-indent: get($layout, default, item, submenu, self, indent);
+			$item-submenu-link-padding: get($layout, default, item, submenu, item, link, self, padding);
+
+			$item-submenu-section-indent: get($layout, default, item, submenu, section, self, indent);
+			$item-submenu-section-padding: get($layout, default, item, submenu, section, padding);
+
+			> .menu-item {
+				> .menu-link {
+					padding: $item-link-padding;
+				}
+
+				> .menu-submenu {
+					.menu-subnav {
+						// item link paddings
+						.menu-content {
+							.menu-heading {
+								padding: $item-submenu-link-padding;
+								padding-left: $item-submenu-padding-left + (1 * $item-submenu-section-indent);
+							}
+
+							.menu-inner {
+								padding: 0;
+								margin: 0;
+
+								.menu-link {
+									padding: $item-submenu-link-padding;
+									padding-left: $item-submenu-padding-left + (2 * $item-submenu-section-indent);
+								}
+							}
+						}
+
+						> .menu-item {
+							> .menu-link {
+								padding: $item-submenu-link-padding;
+								padding-left: $item-submenu-padding-left + (1 * $item-submenu-indent);
+							}
+
+							> .menu-submenu {
+								padding: 0;
+
+								.menu-subnav {
+									padding: 0;
+
+									> .menu-item {
+										> .menu-link {
+											padding: $item-submenu-link-padding;
+											padding-left: $item-submenu-padding-left + (2 * $item-submenu-indent);
+										}
+
+										> .menu-submenu {
+											padding: 0;
+
+											.menu-subnav {
+												> .menu-item {
+													> .menu-link {
+														padding: $item-submenu-link-padding;
+														padding-left: $item-submenu-padding-left + (3 * $item-submenu-indent);
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+
+						// section paddings
+						> .menu-section {
+							padding: $item-submenu-section-padding;
+							padding-left:$item-submenu-padding-left + (1 * $item-submenu-section-indent);
+						}
+
+						> .menu-item {
+							> .menu-submenu {
+								padding: 0;
+								.menu-subnav {
+									> .menu-section {
+										padding: $item-submenu-section-padding;
+										padding-left: $item-submenu-padding-left + (2 * $item-submenu-section-indent);
+									}
+
+									> .menu-item {
+										> .menu-submenu {
+											padding: 0;
+											.menu-subnav {
+												> .menu-section {
+													padding: $item-submenu-section-padding;
+													padding-left:$item-submenu-padding-left + (3 * $item-submenu-section-indent);
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@mixin menu-ver-theme($base-config, $layout) {
+	.#{get($base-config, class)} {
+		@include attr(background-color, get($layout, default, self, bg-color));
+
+		.menu-nav {
+			// menu item
+			> .menu-item {
+				@include menu-ver-item-theme(get($layout, default, item));
+
+				> .menu-arrow {
+					color: get($layout, default, self, bg-color);
+				}
+			}
+
+			// menu section
+			> .menu-section {
+				@include menu-ver-section-theme(get($layout, default, section));
+			}
+
+			// menu item separator
+			> .menu-separator {
+				@include menu-ver-separator-theme(get($layout, default, separator));
+			}
+
+			// menu item
+			> .menu-item {
+				.menu-submenu {
+					.menu-subnav {
+						@include attr(background-color, get($layout, default, item, submenu, self, bg-color, default));
+					}
+					// menu item
+					.menu-item {
+						@include menu-ver-item-theme(get($layout, default, item, submenu, item));
+					}
+
+					// menu section
+					.menu-section {
+						@include menu-ver-section-theme(get($layout, default, item, submenu, section));
+					}
+
+					// menu item separator
+					.menu-separator {
+						@include menu-ver-separator-theme(get($layout, default, item, submenu, separator));
+					}
+				}
+			}
+		}
+	}
+}
+
+// Dropdown
+@mixin menu-ver-dropdown-base($base-config, $layout) {
+	// base dropdown submenu
+	.#{get($base-config, parent-class)}-minimize .#{get($base-config, class)},
+	.#{get($base-config, class)}.#{get($base-config, class)}-dropdown {
+		.menu-nav {
+			.menu-item:not([data-menu-submenu-mode=accordion]) {
+				> .menu-link {
+					> .menu-arrow {
+						&:before {
+							@include fix-animation-lags();
+						}
+					}
+				}
+
+				> .menu-submenu {
+					display: none !important;
+					@include fix-animation-lags();
+				}
+
+				&.menu-item-hover {
+					position: relative;
+
+					> .menu-submenu {
+						top: get($layout, dropdown, item, submenu, self, offset, inner, default);
+						position: absolute;
+						left: 0;
+						z-index: get($layout, dropdown, item, self, zindex);
+						display: flex !important;
+						width: get($layout, dropdown, item, submenu, self, width);
+						margin-left: get($layout, dropdown, item, submenu, self, parent-width);
+						@include border-radius(get($layout, dropdown, item, submenu, self, border-radius));
+
+						&.menu-submenu-up {
+							bottom: 0;
+							top: auto;
+						}
+
+					 	animation:#{get($base-config, class)}-submenu-fade-in .3s ease 1, #{get($base-config, class)}-submenu-move-up .3s ease-out 1;
+
+					 	&.menu-submenu-up {
+					 		top: auto;
+					 		bottom: get($layout, dropdown, item, submenu, self, offset, inner, up);
+					 		animation: #{get($base-config, class)}-submenu-fade-in .3s ease 1, #{get($base-config, class)}-submenu-move-down .3s ease-out 1;
+
+	                    	@include for-ie11 {
+	                        	animation: none;
+	                    	}
+					 	}
+
+						.menu-subnav {
+							padding: get($layout, dropdown, item, submenu, self, padding);
+
+							> .menu-item {
+								.menu-link {
+									justify-content: flex-start;
+									padding: get($layout, dropdown, item, submenu, item, link, self, padding);
+
+									.link-title {
+										display: flex;
+									}
+
+									.menu-text {
+										@include fix-animation-lags();
+									}
+
+									.menu-icon {
+										display: flex;
+									}
+
+									.menu-bullet {
+										display: flex;
+									}
+
+									.menu-label {
+										display: flex;
+									}
+
+									.menu-arrow {
+										display: flex;
+									}
+								}
+
+								.menu-submenu {
+									.menu-subnav {
+										padding: get($layout, dropdown, item, submenu, self, padding);
+
+										> .menu-item {
+											> .menu-link {
+												padding: get($layout, dropdown, item, submenu, item, link, self, padding);
+											}
+
+											.menu-submenu {
+												.menu-subnav {
+													padding: get($layout, dropdown, item, submenu, self, padding);
+
+													> .menu-item {
+														> .menu-link {
+															padding: get($layout, dropdown, item, submenu, item, link, self, padding);
+														}
+													}
+												}
+											}
+										}
+
+										> .menu-section {
+											padding: get($layout, dropdown, item, submenu, section, self, padding);
+										}
+									}
+								}
+
+								@include menu-ver-item-base(get($layout, dropdown, item, submenu, item));
+							}
+
+							> .menu-section {
+								@include menu-ver-section-base( get($layout, dropdown, item, submenu, section) );
+							}
+
+							> .menu-separator {
+								@include menu-ver-separator-base( get($layout, dropdown, item, submenu, separator) );
+							}
+						}
+					}
+				}
+			}
+
+			> .menu-item:not([data-menu-submenu-mode=accordion]) {
+				&.menu-item-hover {
+					> .menu-submenu {
+						margin-left: get($layout, dropdown, item, submenu, self, parent-width);
+						top: get($layout, dropdown, item, submenu, self, offset, root, default);
+
+						&.menu-submenu-up {
+							bottom: get($layout, dropdown, item, submenu, self, offset, root, up);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@mixin menu-ver-dropdown-theme($base-config, $layout) {
+	.#{get($base-config, parent-class)}-minimize .#{get($base-config, class)},
+	.#{get($base-config, class)}.#{get($base-config, class)}-dropdown {
+		.menu-nav {
+			.menu-item:not([data-menu-submenu-mode=accordion]) {
+				&.menu-item-hover {
+					> .menu-submenu {
+						background-color: get($layout, dropdown, item, submenu, self, bg-color);
+						box-shadow: get($layout, dropdown, item, submenu, self, box-shadow);
+
+						.menu-subnav {
+							.menu-item {
+								@include menu-ver-item-theme( get($layout, dropdown, item, submenu, item) );
+							}
+
+							.menu-section {
+								@include menu-ver-section-theme( get($layout, dropdown, item, submenu, section) );
+							}
+
+							.menu-separator {
+								@include menu-ver-separator-theme( get($layout, dropdown, item, submenu, separator) );
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+// Minimize
+@mixin menu-ver-minimize-base($base-config, $layout) {
+	.#{get($base-config, class)} {
+		.menu-nav {
+			padding: get($layout, minimize, self, padding);
+
+			> .menu-item {
+				> .menu-link {
+					.menu-icon {
+						width: 100%;
+					}
+
+					.menu-bullet {
+						display: none;
+					}
+
+					.menu-text {
+						display: none;
+					}
+
+					.menu-label {
+						padding: 0;
+						position: relative;
+						right: get($layout, minimize, item, link, label, right);
+
+						.label {
+							text-indent: -9999px;
+							position: relative;
+							padding: 0;
+							min-width: get($layout, minimize, item, link, label, size);
+							width: get($layout, minimize, item, link, label, size);
+							min-height: get($layout, minimize, item, link, label, size);
+							height: get($layout, minimize, item, link, label, size);
+						}
+					}
+
+					.menu-arrow {
+						display: none;
+					}
+				}
+
+				> .menu-submenu {
+					display: none !important;
+				}
+
+				&.menu-item-here {
+					> .menu-arrow {
+						display: inline-block;
+					}
+				}
+
+				&.menu-item-hover {
+					position: relative;
+					z-index: get($layout, minimize, item, self, zindex);
+					width: get($layout, minimize, item, self, width);
+
+					&.menu-item-open {
+						background: transparent;
+					}
+
+					> .menu-link {
+						width: get($layout, minimize, self, width);
+
+						.link-title {
+							display: none;
+						}
+					}
+
+					> .menu-submenu {
+						top: 0;
+						bottom: auto;
+						display: flex !important;
+						margin-left: get($layout, minimize, item, submenu, self, margin-left) !important;
+
+						@if has($layout, minimize, item, submenu) {
+							.menu-subnav {
+								> .menu-item.menu-item-parent {
+									display: flex;
+									@include menu-ver-minimize-parent-item-base( get($layout, minimize, item, submenu, parent-item) );
+
+									& + .menu-item {
+										margin-top: get($layout, minimize, item, submenu, parent-item, link, self, margin-bottom);
+									}
+								}
+							}
+						}
+					}
+
+					> .menu-arrow {
+						display: none;
+					}
+				}
+			}
+
+			> .menu-section {
+				justify-content: center;
+
+				.menu-text {
+					display: none;
+				}
+
+				.menu-icon {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					padding: get($layout, minimize, section, icon, padding);
+				}
+			}
+		}
+	}
+}
+
+@mixin menu-ver-minimize-theme($base-config, $layout) {
+	.#{get($base-config, class)} {
+		// base vertical menu
+		.menu-nav {
+			> .menu-item {
+				background: transparent;
+
+				> .menu-link {
+					background-color: get($layout, minimize, item, link, self, bg-color, default);
+
+					> .menu-icon {
+						color: get($layout, minimize, item, link, icon, font-color, default);
+					}
+				}
+
+				&.menu-item-hover,
+				&.menu-item-open {
+					background: transparent !important;
+
+					> .menu-link {
+						background-color: get($layout, minimize, item, link, self, bg-color, open);
+
+						> .menu-icon {
+							@include attr(color, get($layout, minimize, item, link, icon, font-color, open));
+						}
+					}
+				}
+
+				&.menu-item-here,
+				&.menu-item-active {
+					background: transparent !important;
+
+					> .menu-link {
+						background-color: get($layout, minimize, item, link, self, bg-color, active);
+
+						> .menu-icon {
+							@include attr(color, get($layout, minimize, item, link, icon, font-color, active));
+						}
+					}
+				}
+
+				&:hover {
+					background: transparent;
+
+					> .menu-link {
+						background-color: get($layout, minimize, item, link, self, bg-color, hover);
+
+						> .menu-icon {
+							@include attr(color, get($layout, minimize, item, link, icon, font-color, hover), !important);
+						}
+					}
+				}
+
+				@if has($layout, minimize, item, submenu) {
+					&.menu-item-hover > .menu-submenu {
+						.menu-subnav > .menu-item.menu-item-parent {
+							display: flex;
+							@include menu-ver-minimize-parent-item-theme( get($layout, minimize, item, submenu, parent-item) );
+						}
+					}
+				}
+			}
+
+			> .menu-section {
+				.menu-icon {
+					color: get($layout, minimize, section, icon, font-color);
+				}
+			}
+		}
+	}
+}
+
+// Build
+// Custom theme
+@mixin menu-ver-build-theme($config, $theme) {
+	$theme-config: ();
+
+	@if ($theme == default) {
+		$theme-config: get($config, build, theme);
+	} @else {
+		$theme-config: get($config, build, themes, $theme);
+	}
+
+	@if (get($config, base, mode) == general) {
+		@include menu-ver-theme((class: get($config, base, class)), $theme-config);
+	} @else if (get($config, base, mode) == tablet-and-mobile) {
+		// Tablet & Mobile Modes
+		@include media-breakpoint-down(md) {
+			@include menu-ver-theme((class: get($config, base, class)), $theme-config);
+		}
+	} @else if (get($config, base, mode) == mobile) {
+		// Mobile mode
+		@include media-breakpoint-down(sm) {
+			@include menu-ver-theme((class: get($config, base, class)), $theme-config);
+		}
+	}
+
+	@if (has($theme-config, minimize)) {
+		// Desktop Mode
+		@include media-breakpoint-up(lg) {
+			.#{get($config, base, parent-class)}-minimize {
+				@include menu-ver-minimize-theme((class: get($config, base, class), parent-class: get($config, base, parent-class)), $theme-config);
+			}
+		}
+	}
+
+	@if (has($theme-config, dropdown)) {
+		// Desktop Mode
+		@include media-breakpoint-up(lg) {
+			@include menu-ver-dropdown-theme((class: get($config, base, class), parent-class: get($config, base, parent-class)), $theme-config);
+		}
+	}
+}
+
+// Build Layout
+@mixin menu-ver-build-layout( $config ) {
+	// Base menu
+	@if (get($config, base, mode) == general) {
+		@include menu-ver-base( get($config, base), get($config, build, layout) );
+	} @else if (get($config, base, mode) == tablet-and-mobile) {
+		// Tablet & Mobile Modes
+		@include media-breakpoint-down(md) {
+			@include menu-ver-base( get($config, base), get($config, build, layout) );
+		}
+	} @else if (get($config, base, mode) == mobile) {
+		// Mobile mode
+		@include media-breakpoint-down(sm) {
+			@include menu-ver-base( get($config, base), get($config, build, layout) );
+		}
+	}
+
+	// Base dropdown menu submenu mode
+	@if (has($config, build, layout, dropdown)) {
+		// Desktop Mode
+		@include media-breakpoint-up(lg) {
+			@include menu-ver-dropdown-base( get($config, base), get($config, build, layout) );
+		}
+
+		// Dropdown Submenu Animations
+		@keyframes #{get($config, base, class)}-submenu-fade-out {
+		    from   { opacity: 1; }
+		    to { opacity: 0; }
+		}
+
+		@keyframes #{get($config, base, class)}-submenu-fade-in {
+		    from   { opacity: 0; }
+		    to { opacity: 1; }
+		}
+
+		@keyframes #{get($config, base, class)}-submenu-move-up {
+		    from   { margin-top: get($config, build, layout, dropdown, item, submenu, self, animation, offset); }
+		    to { margin-top: 0; }
+		}
+
+		@keyframes #{get($config, base, class)}-submenu-move-down {
+		    from   { margin-bottom: get($config, build, layout, dropdown, item, submenu, self, animation, offset); }
+		    to { margin-bottom: 0; }
+		}
+	}
+
+	// Base minimize menu mode
+	@if (has($config, build, layout, minimize)) {
+		// Desktop Mode
+		@include media-breakpoint-up(lg) {
+			.#{get($config, base, parent-class)}-minimize {
+				@include menu-ver-minimize-base( get($config, base), get($config, build, layout) );
+			}
+		}
+	}
+}
+
+@mixin offcanvas-base($class, $config) {
+	$width: get($config, width);
+	$height: get($config, height);
+
+	$offset: get($offcanvas-base-config, offset);
+	$transition: left get($offcanvas-base-config, transition), right get($offcanvas-base-config, transition), bottom get($offcanvas-base-config, transition), top get($offcanvas-base-config, transition);
+
+	.#{$class} {
+		z-index: get($config, zindex);
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		//overflow-y: auto;
+		transition: $transition;
+
+		@if $width != null {
+			left: -($width + $offset);
+			width: $width;
+		}
+
+		@if $height != null {
+			height: $height;
+		}
+
+		&.#{$class}-on {
+			transition: $transition;
+			left: 0;
+		}
+
+		@include for-ie11 {
+			transition: none !important;
+		}
+	}
+
+	@if $width != null {
+		// Right Direction
+		.#{$class}.#{$class}-right {
+			right: -($width + $offset);
+			left: auto;
+
+			&.#{$class}-on {
+				transition: $transition;
+				right: 0;
+				left: auto;
+			}
+		}
+	}
+
+	@if $height != null {
+		// Top Direction
+		.#{$class}.#{$class}-top {
+			top: -($height + $offset);
+			left: 0;
+			right: 0;
+
+			&.#{$class}-on {
+				transition: $transition;
+				top: 0;
+				left: 0;
+				right: 0;
+			}
+		}
+
+		// Bottom Direction
+		.#{$class}.#{$class}-bottom {
+			bottom: -($height + $offset);
+			left: 0;
+			right: 0;
+
+			&.#{$class}-on {
+				transition: $transition;
+				bottom: 0;
+				left: 0;
+				right: 0;
+			}
+		}
+	}
+
+	// Overlay
+	.#{$class}-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		overflow: hidden;
+		z-index: get($config, zindex) - 1;
+		animation: animation-offcanvas-fade-in .6s ease 1;
+	}
+
+	// Animation
+	@keyframes animation-offcanvas-fade-in {
+	    from   { opacity: 0; }
+	    to { opacity: 1; }
+	}
+}
+
+@mixin offcanvas-width($class, $width) {
+	.#{$class} {
+		width: $width;
+		left: -($width + get($offcanvas-base-config, offset));
+
+		&.#{$class}-on {
+			left: 0;
+		}
+	}
+
+	// Right Direction
+	.#{$class}.#{$class}-right {
+		right: -($width + get($offcanvas-base-config, offset));
+		left: auto;
+
+		&.#{$class}-on {
+			right: 0;
+			left: auto;
+		}
+	}
+}
+
+@mixin offcanvas-height($class, $height) {
+	// Top Direction
+	.#{$class}.#{$class}-top {
+		top: -($height + $offset);
+		left: 0;
+		right: 0;
+
+		&.#{$class}-on {
+			transition: $transition;
+			top: 0;
+			left: 0;
+			right: 0;
+		}
+	}
+
+	// Bottom Direction
+	.#{$class}.#{$class}-bottom {
+		bottom: -($height + $offset);
+		left: 0;
+		right: 0;
+
+		&.#{$class}-on {
+			transition: $transition;
+			bottom: 0;
+			left: 0;
+			right: 0;
+		}
+	}
+}
+
+@mixin offcanvas-theme($class, $config) {
+	.#{$class} {
+		@if (has($config, bg-color)) {
+			background: get($config, bg-color);
+		}
+
+		@if (has($config, shadow)) {
+			box-shadow: get($config, shadow);
+		}
+	}
+
+	.#{$class}-overlay {
+		background: get($config, overlay-bg-color);
+	}
+}
+
+@mixin offcanvas-build($class, $mode, $config) {
+	@if $mode == default {
+		// Default Mode
+		@include offcanvas-base($class, $config);
+		@include offcanvas-theme($class, $config);
+	}
+
+	@if $mode == desktop {
+		// Desktop Mode
+		@include media-breakpoint-up(lg) {
+			@include offcanvas-base($class, $config);
+			@include offcanvas-theme($class, $config);
+		}
+	}
+
+	@if $mode == desktop-and-tablet {
+		// Desktop & Tablet Modes
+		@include media-breakpoint-up(md) {
+			@include offcanvas-base($class, $config);
+			@include offcanvas-theme($class, $config);
+		}
+	}
+
+	@if $mode == tablet {
+		// Tablet Mode
+		@include media-breakpoint-between(md, lg) {
+			@include offcanvas-base($class, $config);
+			@include offcanvas-theme($class, $config);
+		}
+	}
+
+	@if $mode == tablet-and-mobile {
+		// Tablet & Mobile Modes
+		@include media-breakpoint-down(md) {
+			@include offcanvas-base($class, $config);
+			@include offcanvas-theme($class, $config);
+		}
+	}
+
+	@if $mode == mobile {
+		// Mobile Mode
+		@include media-breakpoint-down(sm) {
+			@include offcanvas-base($class, $config);
+			@include offcanvas-theme($class, $config);
+		}
+	}
+
+	// Responsive Width
+	@if has($config, width)  {
+		@media (max-width: get($config, width) + 50px) {
+			.#{$class} {
+				width: 90% !important;
+			}
+		}
+	}
+}
+
+
+@mixin svg-icon-color($color, $important: false) {
+  svg {
+      g {
+          [fill] {
+              transition: fill .3s ease;
+              fill: $color valueif($important, !important, null);
+          }
+      }
+
+      &:hover {
+          g {
+              [fill] {
+                  transition: fill .3s ease;
+              }
+          }
+      }
+  }
+}
+
+@mixin svg-icon-transition() {
+  svg {
+      g {
+          [fill] {
+              transition: fill .3s ease;
+          }
+      }
+  }
+}
+
+@mixin svg-icon-size($size, $important: false) {
+  svg {
+      height: $size valueif($important, !important, null);
+      width: $size valueif($important, !important, null);
+  }
+}
+
+@mixin svg-logo-color($color, $important: false){
+  svg{
+      path{
+          fill: $color valueif($important, !important, null);
+      }
+  }
+}
+
+@mixin navi-link-theme($bullet-bg, $text-color, $icon-color, $arrow-color, $link-bg, $link-border-bottom) {
+  @if ($bullet-bg != null) {
+      .navi-bullet {
+          .bullet {
+              background-color: $bullet-bg;
+          }
+      }
+  }
+
+  @if ($text-color != null) {
+      color: $text-color;
+
+      .navi-text {
+          color: $text-color;
+      }
+  }
+
+  @if ($icon-color != null) {
+      .navi-icon {
+    // Font icon
+    i {
+      color: $icon-color;
+    }
+
+    // Svg icon
+    @include svg-icon-color($icon-color);
+  }
+  }
+
+  @if ($arrow-color != null) {
+      .navi-arrow {
+          color: $arrow-color;
+      }
+  }
+
+  @if ($link-bg != null) {
+      background-color: $link-bg;
+  }
+
+  @if ($link-border-bottom != null) {
+      border-bottom: 1px solid $link-border-bottom;
+  }
+}
+
+@mixin navi-icon-size($width, $font-size, $svg-size) {
+  .navi-icon {
+      flex: 0 0 $width;
+
+      i {
+          font-size: $font-size;
+      }
+
+      @include svg-icon-size($svg-size);
+  }
+}
+
+@mixin navi-font-size($font-size) {
+  font-size: $font-size;
+
+  .navi-text {
+      font-size: $font-size;
+  }
+}
+
+@mixin navi-link-transition($transition) {
+  transition: $transition;
+
+  .navi-bullet {
+      .bullet {
+          transition: $transition;
+      }
+  }
+
+  .navi-text {
+      transition: $transition;
+  }
+
+  .navi-icon {
+      transition: $transition;
+
+  i {
+    transition: $transition;
+  }
+
+  // Svg icon
+  .svg-icon {
+          @include svg-icon-transition();
+      }
+}
+
+  .navi-arrow {
+      transition: $transition;
+  }
+}
+
+@mixin label-size($size, $font-size) {
+  height: $size;
+width: $size;
+  font-size: $font-size;
+
+  &.label-inline {
+  width: auto;
+  }
+}
+
+@mixin label-dot-size($size) {
+  line-height: $size;
+  min-height: $size;
+  min-width: $size;
+  height: $size;
+  width: $size;
+}
+
+
+// Black color
+$black:    											#000 !default;
+
+// White color
+$white:    											#fff !default;
+
+// Gray colors
+$gray-100: 											#F3F6F9 !default;
+$gray-200: 											#EBEDF3 !default;
+$gray-300: 											#E4E6EF !default;
+$gray-400: 											#D1D3E0 !default;
+$gray-500: 											#B5B5C3 !default;
+$gray-600: 											#7E8299 !default;
+$gray-700: 											#5E6278 !default;
+$gray-800: 											#3F4254 !default;
+$gray-900: 											#181C32 !default;
+
+// Dark colors
+$dark:          									$gray-900 !default;
+$dark-75:          									$gray-800 !default; // Custom variable
+$dark-65:          									$gray-700 !default; // Custom variable
+$dark-50:          									$gray-600 !default; // Custom variable
+$dark-25:          									$gray-400 !default; // Custom variable
+
+// Text muted
+$text-muted:                  						$gray-500 !default; // Custom variable
+
+// Gray colors list
+$grays: (
+    "100": $gray-100,
+    "200": $gray-200,
+    "300": $gray-300,
+    "400": $gray-400,
+    "500": $gray-500,
+    "600": $gray-600,
+	"700": $gray-700,
+    "800": $gray-800,
+    "900": $gray-900
+) !default; // Custom variable
+
+// Bootstrap standard & extended colors
+// Dark colors
+$dark:          									$dark !default; // Bootstrap variable
+$dark-hover:          								darken($dark, 3%) !default; // Custom variable
+$dark-light:          							    $gray-400 !default; // Custom variable
+$dark-inverse:         								$white !default; // Custom variable
+
+// Jenda Primary colors
+$primary:       									#047076 !default; // Bootstrap variable
+$primary-hover:    									#046267 !default; // Custom variable
+$primary-light:    									#3BBCC3 !default; // Custom variable
+$primary-inverse:  									$white !default;  // Custom variable
+
+// Secondary colors
+$secondary:     									#10564F !default; // Bootstrap variable
+$secondary-hover:  									#0D4741 !default; // Custom variable
+$secondary-light:  									#27A094 !default; // Custom variable
+$secondary-inverse:									$dark-75 !default; // Custom variable
+
+// Success colors
+$success:       									#27B668 !default; // Bootstrap variable
+$success-hover:    									#1F9254 !default; // Custom variable
+$success-light:    									#8AE8B5 !default; // Custom variable
+$success-inverse:  									$white !default; // Custom variable
+
+// Inco colors
+$info:         		 								#8950FC !default; // Bootstrap variable
+$info-hover:   		 								#7337EE !default; // Custom variable
+$info-light:   		 								#EEE5FF !default; // Custom variable
+$info-inverse: 		 								$white !default; // Custom variable
+
+// Warning colors
+$warning:       									#FFA800 !default; // Bootstrap variable
+$warning-hover:    									#EE9D01 !default; // Custom variable
+$warning-light:    									#FFF4DE !default; // Custom variable
+$warning-inverse:  									$white !default; // Custom variable
+
+// Danger colors
+$danger:        									#F64E60 !default; // Bootstrap variable
+$danger-hover:     									#DC2E3A !default; // Custom variable
+$danger-light:     									#F8989F !default; // Custom variable
+$danger-inverse:   									$white !default; // Custom variable
+
+// Light colors
+$light:         									$gray-100 !default; // Bootstrap variable
+$light-hover:         								$gray-300 !default; // Custom variable
+$light-light:         								$gray-100 !default; // Custom variable
+$light-inverse:        								$gray-600 !default; // Custom variable
+
+// White colors
+$white:    											$white !default; // Bootstrap variable
+$white-hover:    									$gray-100 !default; // Custom variable
+$white-light:    									$white !default;  // Custom variable
+$white-inverse:    									$dark-75 !default; // Custom variable
+
+// Bootstrap theme colors
+$theme-colors: (
+	"white":      $white,  // custom color type
+	"primary":    $primary,
+    "secondary":  $secondary,
+    "success":    $success,
+    "info":       $info,
+    "warning":    $warning,
+    "danger":     $danger,
+    "light":      $light,
+    "dark":       $dark
+) !default;
+
+// Extended hover colors for Bootstrap theme colors
+$theme-hover-colors: (
+	"white":      $white-hover,   // custom color type
+	"primary":    $primary-hover,
+    "secondary":  $secondary-hover,
+    "success":    $success-hover,
+    "info":       $info-hover,
+    "warning":    $warning-hover,
+    "danger":     $danger-hover,
+    "light":      $light-hover,
+    "dark":       $dark-hover
+) !default;  // Custom variable
+
+// Extended inverse colors for Bootstrap theme colors
+$theme-inverse-colors: (
+	"white":      $white-inverse,
+	"primary":    $primary-inverse,
+    "secondary":  $secondary-inverse,
+    "success":    $success-inverse,
+    "info":       $info-inverse,
+    "warning":    $warning-inverse,
+    "danger":     $danger-inverse,
+    "light":      $light-inverse,
+    "dark":       $dark-inverse
+) !default;  // Custom variable
+
+// Extended outline colors for Bootstrap theme colors
+$theme-outline-inverse-colors: (
+	"white":      $white,
+	"primary":    $primary,
+    "secondary":  $dark-75,
+    "success":    $success,
+    "info":       $info,
+    "warning":    $warning,
+    "danger":     $danger,
+    "light":      $dark-75,
+    "dark":       $dark
+) !default;  // Custom variable
+
+// Extended light colors for Bootstrap theme colors
+$theme-light-colors: (
+    "white":      $white-light,
+	"primary":    $primary-light,
+    "secondary":  $secondary-light,
+    "success":    $success-light,
+    "info":       $info-light,
+    "warning":    $warning-light,
+    "danger":     $danger-light,
+    "light":      $light-light,
+    "dark":       $dark-light
+) !default;  // Custom variable
+
+// Extended shadow colors for Bootstrap theme colors
+$theme-shadow-colors: (
+    "white":      $dark,
+	"primary":    $primary,
+    "secondary":  $dark,
+    "success":    $success,
+    "info":       $info,
+    "warning":    $warning,
+    "danger":     $danger,
+    "light":      $dark,
+    "dark":       $dark
+) !default;  // Custom variable
+
+// Extended theme text colors
+$theme-text-colors: (
+    "white":      $white,
+	"primary":    $primary,
+    "secondary":  $dark,
+    "success":    $success,
+    "info":       $info,
+    "warning":    $warning,
+    "danger":     $danger,
+    "light":      $light,
+    "dark":       $dark,
+    "dark-75":    $dark-75,
+    "dark-65":    $dark-65,
+    "dark-50":    $dark-50,
+    "dark-25":    $dark-25,
+    "muted":      $text-muted
+) !default;  // Custom variable
+
+// Social Network Colors Used With Boostrap Buttons(see: https://primarycolors.net/)
+$social-colors: (
+	facebook: (
+		base: #3b5998,
+		inverse: #fff,
+        light: rgba(#3b5998, .1),
+        hover: darken(#3b5998, 7.5%)
+	),
+	google: (
+		base: #dd4b39,
+		inverse: #fff,
+        light: rgba(#dd4b39, .1),
+        hover: darken(#dd4b39, 7.5%)
+	),
+	twitter: (
+		base: #1da1f2,
+		inverse: #fff,
+        light: rgba(#1da1f2, .1),
+        hover: darken(#1da1f2, 7.5%)
+	),
+	instagram: (
+		base: #e1306c,
+		inverse: #fff,
+        light: rgba(#e1306c, .1),
+        hover: darken(#e1306c, 7.5%)
+	),
+	youtube: (
+		base: #ff0000,
+		inverse: #fff,
+        light: rgba(#ff0000, .1),
+        hover: darken(#ff0000, 7.5%)
+	),
+    linkedin: (
+        base: #0077b5,
+        inverse: #fff,
+        light: rgba(#0077b5, .1),
+        hover: darken(#0077b5, 7.5%)
+    ),
+    skype: (
+        base: #00aff0,
+        inverse: #fff,
+        light: rgba(#00aff0, .1),
+        hover: darken(#00aff0, 7.5%)
+    )
+) !default; // Custom variable
+
+// Extended custom spacing for Bootstrap
+//
+// Control the default styling of most Bootstrap elements by modifying these
+// variables. Mostly focused on spacing.
+// You can add more entries to the $spacers map, should you need more variation.
+$spacer: 1rem !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$spacers: (
+    0: 0,
+    1: ($spacer * .25),  	// 3.5px
+    2: ($spacer * .5),   	// 7px;
+	3: ($spacer * .75),  	// 1.5px
+	4: ($spacer * 1),    	// 14px
+	5: ($spacer * 1.25), 	// 17.5px
+	6: ($spacer * 1.5),  	// 21px
+	7: ($spacer * 1.75), 	// 24.5px
+	8: ($spacer * 2),    	// 28px
+	9: ($spacer * 2.25), 	// 31.5px
+	10: ($spacer * 2.5), 	// 35px
+	11: ($spacer * 2.75),	// 38.5px
+	12: ($spacer * 3),   	// 42px
+	13: ($spacer * 3.25),	// 45.5px
+	14: ($spacer * 3.5), 	// 49px
+	15: ($spacer * 3.75), 	// 52.5px
+	16: ($spacer * 4), 		// 55px
+	17: ($spacer * 4.25), 	// 58.5px
+	18: ($spacer * 4.5), 	// 62px
+	19: ($spacer * 4.75), 	// 65.5px
+	20: ($spacer * 5), 		// 69px
+	21: ($spacer * 5.25),	// 73.5px
+	22: ($spacer * 5.5), 	// 77px
+	23: ($spacer * 5.75), 	// 8.5px
+	24: ($spacer * 6), 		// 84px
+	25: ($spacer * 6.25), 	// 87.5px
+	26: ($spacer * 6.5), 	// 91px
+	27: ($spacer * 6.75), 	// 94.5px
+	28: ($spacer * 7), 		// 99px
+	29: ($spacer * 7.25),   // 102.5px
+	30: ($spacer * 7.5), 	// 106px
+	31: ($spacer * 7.75), 	// 109.5px
+	32: ($spacer * 8), 		// 113px
+	33: ($spacer * 8.25), 	// 116.5px
+	34: ($spacer * 8.5), 	// 120px
+	35: ($spacer * 8.75), 	// 123.5px
+	36: ($spacer * 9), 		// 127px
+	37: ($spacer * 9.25),    // 13.5px
+	48: ($spacer * 9.5), 	// 134px
+	39: ($spacer * 9.75), 	// 137.5px
+    40: ($spacer * 10), 	// 140px
+);
+
+// Components
+//
+// Define common padding and border radius sizes and more.
+$line-height-xl:									1.8 !default;
+$line-height-lg:              						1.5 !default;
+$line-height-sm:              						1.35 !default;
+
+$component-light-style-opacity:                 	.1 !default; // Custom variable
+$component-active-color:                            $white !default;
+$component-active-bg:                               $primary !default;
+
+// Box shadow
+$box-shadow-xs:                                     0 .25rem .5rem 0 rgba($black, .05);
+$box-shadow-sm:               						0 .1rem 1rem .25rem rgba($black, .05) !default;
+$box-shadow:                  						0 .5rem 1.5rem .5rem rgba($black, .075) !default;
+$box-shadow-lg:               						0 1rem 2rem 1rem rgba($black, .1) !default;
+
+// Border Radiues
+$border-radius-sm:            						.28rem !default;
+$border-radius:               						.42rem !default;
+$border-radius-lg:            						.85rem !default;
+$border-radius-xl:                                  1.25rem !default; // Custom variable
+
+// Border settings
+$border-color:                                      $gray-200 !default;
+$border-width:                                      1px !default;
+
+// Hover background color
+$hover-bg:                                          $gray-100 !default; // Custom variable
+
+// Activebackground color
+$active-bg:                                         darken($gray-100, 1%) !default; // Custom variable
+
+// Options
+//
+// Quickly modify global styling by enabling or disabling optional features.
+$enable-rounded: 									true !default;
+$enable-shadows:                              		true !default;
+
+// Grid breakpoints
+//
+// Define the minimum dimensions at which your layout will change,
+// adapting to different screen sizes, for use in media queries.
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px // custom breakpoint
+) !default;
+
+
+// Grid containers
+//
+// Define the maximum width of `.container` for different screen sizes.
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px,
+  xxl: 1340px
+) !default;
+
+
+// Grid columns
+//
+// Set the number of columns and specify the width of the gutters.
+$grid-columns:                						12 !default;
+$grid-gutter-width:           						25px !default;
+$grid-divider-bg:                                   $gray-200 !default; // Custom variable
+
+
+// Body
+// Settings for the `<body>` element.
+$body-bg:                   						$white !default;
+$body-color:                						$dark-75 !default;
+
+// Typography
+//
+// Font, line-height, and color for body text, headings, and more.
+
+// Font family
+$font-family-base:            						Poppins, Helvetica, "sans-serif" !default;
+
+$font-size-base:              						1rem !default; // Assumes the browser default, typically `13px`
+$font-size-lg:               	 					$font-size-base * 1.08 !default;   // 14.04px
+$font-size-sm:                						$font-size-base * .925 !default;   // 12.025px
+$font-size-xs:                						$font-size-base * .8 !default;     // 1.4px
+
+$h1-font-size:                                      $font-size-base * 2 !default;      // 26px
+$h2-font-size:                                      $font-size-base * 1.75 !default;   // 22.75px
+$h3-font-size:                                      $font-size-base * 1.5 !default;    // 19.5px
+$h4-font-size:                                      $font-size-base * 1.35 !default;   // 17.55px
+$h5-font-size:                                      $font-size-base * 1.25 !default;   // 16.25px
+$h6-font-size:                                      $font-size-base * 1.175 !default;  // 15.275px
+
+$headings-margin-bottom:                            $spacer / 2 !default;
+$headings-font-family:                              null !default;
+$headings-font-weight:                              500 !default;
+$headings-line-height:                              1.2 !default;
+$headings-color:                                    null !default;
+
+$display1-size:                                     5.5rem !default;  // 71.5px
+$display2-size:                                     4.5rem !default;  // 58.5px
+$display3-size:                                     3.5rem !default;  // 45.5px
+$display4-size:                                     2.5rem !default;  // 32.5px
+$display5-size:                                     2.25rem !default; // 29.5px
+
+// Font Sizes
+$font-sizes: (
+    font-size-h1: $h1-font-size,
+    font-size-h2: $h2-font-size,
+    font-size-h3: $h3-font-size,
+    font-size-h4: $h4-font-size,
+    font-size-h5: $h5-font-size,
+    font-size-h6: $h6-font-size,
+    display1: $display1-size,
+    display2: $display2-size,
+    display3: $display3-size,
+    display4: $display4-size,
+    display5: $display5-size
+) !default;
+
+$display1-weight:                                   300 !default;
+$display2-weight:                                   300 !default;
+$display3-weight:                                   300 !default;
+$display4-weight:                                   300 !default;
+$display-line-height:                               $headings-line-height !default;
+
+$lead-font-size:                                    $font-size-base * 1.25 !default;
+$lead-font-weight:                                  300 !default;
+$small-font-size:                                   80% !default;
+
+// Font Weight
+$font-weight-lighter:         						lighter !default;
+$font-weight-light:           						300 !default;
+$font-weight-normal:          						400 !default;
+$font-weight-bold:            						500 !default;
+$font-weight-bolder:          						600 !default;
+$font-weight-boldest:          						700 !default;
+
+$line-height-base:                                  1.5 !default;
+
+
+// Transition
+$transition:                                  		all .15s ease !default; // Custom variable
+$transition-link:                                   color .15s ease, background-color .15s ease, border-color .15s ease, box-shadow .15s ease !default; // Custom variable
+$transition-input:                                  color .15s ease, background-color .15s ease, border-color .15s ease, box-shadow .15s ease !default; // Custom variable
+
+
+// Links
+//
+// Style anchor elements.
+$link-color:                                        $primary !default;
+$link-decoration:                                   none !default;
+$link-hover-color:                                  darken($primary, 15%) !default;
+$link-hover-decoration:                             underline !default;
+// Darken percentage for links with `.text-*` class (e.g. `.text-success`)
+$emphasized-link-hover-darken-percentage:           15% !default;
+
+
+// Buttons + Forms
+//
+// Shared variables that are reassigned to `$input-` and `$btn-` specific variables.
+$input-btn-padding-y:                               .65rem !default;
+$input-btn-padding-x:                               1rem !default;
+$input-btn-font-family:                             null !default;
+$input-btn-font-size:                               $font-size-base !default;
+$input-btn-line-height:                             $line-height-base !default;
+
+$input-btn-focus-width:                             .2rem !default;
+$input-btn-focus-color:                             rgba($component-active-bg, .25) !default;
+$input-btn-focus-box-shadow:                        none !default;
+
+$input-btn-padding-y-sm:                            .55rem !default;
+$input-btn-padding-x-sm:                            .75rem !default;
+$input-btn-font-size-sm:                            $font-size-sm !default;
+$input-btn-line-height-sm:                          $line-height-sm !default;
+
+$input-btn-padding-y-lg:                            .825rem !default;
+$input-btn-padding-x-lg:                            1.42rem !default;
+$input-btn-font-size-lg:                            $font-size-lg !default;
+$input-btn-line-height-lg:                          $line-height-lg !default;
+
+$input-btn-border-width:                            $border-width !default;
+
+
+// Buttons
+//
+// For each of Bootstrap's buttons, define text, background, and border color.
+$btn-disabled-opacity:        						.6 !default;
+$btn-transition:              						color .3s ease-in-out, background-color .3s ease-in-out, border-color .3s ease-in-out, box-shadow .3s ease-in-out !default;// Custom variable
+$btn-box-shadow:                                    none !default;
+$btn-focus-box-shadow:                              none !default;
+$btn-active-box-shadow:                             none !default;
+$btn-font-weight:             						normal !default;
+$btn-secondary-color:								$white!default;
+$btn-secondary-hover-bg-color:						$gray-100 !default;
+$btn-icon-size-xs:                                  24px !default; //custom parameter
+
+// Allows for customizing button radius independently from global border radius
+$btn-border-radius:                                 $border-radius !default;
+$btn-border-radius-lg:                              $border-radius !default;
+$btn-border-radius-sm:                              $border-radius !default;
+
+$input-plaintext-color:                 			$dark-75 !default;
+$input-placeholder-color:               			$text-muted !default;
+$input-color:                           			$dark-75 !default;
+$input-border-color:								$gray-300 !default;
+$input-border-width:                                $input-btn-border-width !default;
+$input-box-shadow:                                  none !default;
+$input-focus-border-color:							lighten($primary, 10%);
+$input-focus-box-shadow:                            none !default;
+$input-height-border:                               $input-border-width * 2 !default;
+
+$input-bg:                                          $white !default;
+$input-disabled-bg:                     			$gray-100 !default;
+$input-readonly-bg:                     			$white !default; // Custom variable
+$input-group-icon-color:                     		$dark-75 !default;
+$input-group-addon-color:               			$dark-75 !default;
+$input-group-addon-bg:                  			$gray-100 !default;
+
+$input-border-radius:                   			$border-radius !default;
+$input-border-radius-lg:                			$border-radius !default;
+$input-border-radius-sm:                			$border-radius-sm !default;
+
+$input-solid-bg:                                    $gray-100; // Custom variable
+$input-solid-bg-focus:                              $gray-200; // Custom variable
+$input-solid-placeholder-color:                     $input-placeholder-color;  // Custom variable
+$input-solid-color:                              	$dark-75; // Custom variable
+
+// Forms
+$form-group-margin-bottom:                          1.75rem !default;
+$form-label-font-size:                              1rem !default; // Custom variable
+$form-label-font-weight:                            400 !default; // Custom variable
+$form-feedback-font-size:                           .9rem !default; // Custom variable
+$form-feedback-font-weight:                         400 !default; // Custom variable
+$form-text-font-size:                               .9rem !default; // Custom variable
+$form-text-font-weight:                             400 !default; // Custom variable
+$form-validation-input-shadow:                      false;  // Custom variable
+
+// Table
+$table-bg:                      					transparent !default;
+$table-accent-bg:               					$gray-200 !default;
+$table-hover-bg:                					$gray-300 !default;
+$table-active-bg:               					$table-hover-bg !default;
+
+$table-border-color:            					$gray-200 !default;
+$table-head-bg:                 					$gray-100 !default;
+$table-head-color:              					$dark-75 !default;
+$table-head-font-size:             					1rem !default; // Custom variable
+$table-head-font-weight:           					600 !default; // Custom variable
+
+$table-dark-color:            						$white !default;
+$table-dark-bg:               						$dark !default;
+$table-dark-accent-bg:        						rgba($white, .05) !default;
+$table-dark-hover-color:      						$table-dark-color !default;
+$table-dark-hover-bg:        						rgba($white, .075) !default;
+$table-dark-border-color:     						lighten($table-dark-bg, 7.5%) !default;
+
+$table-head-bg:                                     $gray-100 !default; // Custom variable
+$table-compact-head-font-size:                      .9rem !default; // Custom variable
+$table-compact-head-color:                          $text-muted !default; // Custom variable
+$table-compact-head-text-transform:                 uppercase !default; // Custom variable
+$table-compact-head-font-weight:                    600 !default; // Custom variable
+$table-compact-head-font-weight:                    600 !default; // Custom variable
+$table-compact-head-letter-spacing:                 .1rem !default; // Custom variable
+
+// Card
+$card-box-shadow: 									0 0 30px 0 rgba(82,63,105,.05) !default; // card custom shadow
+$card-border-color:                 				$gray-200 !default;
+$card-cap-bg:                       				$white !default;
+$card-spacer-y:                     				2rem !default;
+$card-spacer-x:                    					2.25rem !default;
+$card-border-radius:                				$border-radius !default;
+
+$card-header-spacer-y:                              .5rem !default; // Custom variable
+$card-header-height: 								70px !default; // Custom variable
+$card-sticky-header-bg:   						    $white !default; // Custom variable
+$card-sticky-header-height: 						70px !default; // Custom variable
+$card-sticky-zindex:                                101  !default; // Custom variable
+$card-sticky-shadow:                                0 1px 15px 1px rgba(69, 65, 78, .1) !default; // Custom variable
+
+// List group
+$list-group-border-color:           				$gray-200 !default;
+$list-group-hover-bg:               				$gray-200 !default;
+
+
+// Modals
+
+// Padding applied to the modal body
+$modal-inner-padding:              					1.75rem !default;
+
+// Margin between elements in footer, must be lower than or equal to 2 * $modal-inner-padding
+$modal-footer-margin-between:       				.5rem !default;
+
+$modal-dialog-margin:               				.5rem !default;
+$modal-dialog-margin-y-sm-up:       				1.75rem !default;
+
+$modal-content-color:               				null !default;
+$modal-content-bg:                  				$white !default;
+$modal-content-border-color:        				rgba($black, .2) !default;
+$modal-content-border-width:        				0 !default;
+$modal-content-border-radius:       				$border-radius !default;
+$modal-content-inner-border-radius: 				$border-radius !default;
+
+$modal-content-box-shadow:       				    0 .25rem .5rem rgba($black, .05) !default;
+$modal-content-box-shadow-xs:       				0 .25rem .5rem rgba($black, .1) !default;
+$modal-content-box-shadow-sm-up:   					0 .5rem 1rem rgba($black, .1) !default;
+
+$zindex-modal:                                      1050 !default;
+$modal-backdrop-bg:                		 			$black !default;
+$modal-backdrop-opacity:            				.2 !default;
+$modal-header-border-color:         				$border-color !default;
+$modal-footer-border-color:         			 	$border-color !default;
+$modal-header-border-width:         				1px !default;
+$modal-footer-border-width:         				1px !default;
+$modal-header-padding-y:            				1.5rem !default;
+$modal-header-padding-x:            				1.75rem !default;
+$modal-header-padding:              				$modal-header-padding-y $modal-header-padding-x !default; // Keep this for backwards compatibility
+
+$modal-xl:                         		 			1140px !default;
+$modal-lg:                          				800px !default;
+$modal-md:                          				500px !default;
+$modal-sm:                          				300px !default;
+
+
+// Pagination
+$pagination-color:                  				$primary !default;
+$pagination-border-color:           				$gray-300 !default;
+$pagination-hover-bg:              	 				$gray-200 !default;
+$pagination-hover-border-color:     				$gray-300 !default;
+$pagination-disabled-border-color:  				$gray-200 !default;
+
+
+// Dropdowns
+// Dropdown menu container and contents.
+$dropdown-box-shadow:								0 0 50px 0 rgba(82,63,105, .15) !default;
+$zindex-dropdown:                   				98 !default;
+$dropdown-border-radius:                            $border-radius !default;
+$dropdown-border-width:                             0 !default;
+$dropdown-item-padding-y:                           .75rem !default;
+$dropdown-item-padding-x:                           1.25rem !default;
+$dropdown-divider-bg:                               $gray-200 !default;
+$dropdown-menu-widths: (
+	sm: 175px,
+	md: 250px,
+	lg: 350px,
+	xl: 400px,
+	xxl: 600px
+); // Custom variable
+
+
+// Popovers
+$popover-font-size:                 				.9rem !default;
+$popover-max-width:                 				276px !default;
+$popover-border-width:              				1px !default;
+$popover-border-color:              				#fff !default;
+$popover-border-radius:             				$border-radius !default;
+$popover-box-shadow:                				0 0 20px 0 rgba(0,0,0,.15) !default;
+$popover-header-bg:                 				#fff !default;
+$popover-header-color:              				$dark !default;
+$popover-header-font-weight:           				500 !default;  // Custom variable
+$popover-header-font-size:             				1rem !default;  // Custom variable
+$popover-header-padding-y:          				1rem !default;
+$popover-header-padding-x:          				1.25rem !default;
+$popover-header-border-color:                       $gray-200 !default;  // Custom variable
+$popover-body-color:                				$body-color !default;
+
+
+// Tooltips
+$tooltip-font-size:                 				.9rem !default;
+$tooltip-max-width:                 				200px !default;
+$tooltip-color:                     				$dark-75 !default;
+$tooltip-bg:                        				#fff !default;
+$tooltip-border-radius:             				3px !default;
+$tooltip-opacity:                   				1 !default;
+$tooltip-box-shadow:                				$popover-box-shadow !default; // Custom variable
+$tooltip-padding-y:                 				.75rem !default;
+$tooltip-padding-x:                 				1rem !default;
+$tooltip-margin:                    				0 !default;
+
+// Custom Toasts
+$toast-zindex:										$zindex-dropdown + 100 !default;
+$toast-spacing:										2rem  !default;
+$toast-width: 										350px !default;
+$toast-box-shadow:									$dropdown-box-shadow !default;
+$toast-header-color: 								$dark-75 !default;
+$toast-header-background-color: 					#fff !default;
+$toast-header-border-color:							$gray-200 !default;
+
+
+// Progress bars
+$progress-height:                                   1rem !default;
+$progress-height-xs:                                .5rem !default; // Custom variable
+$progress-height-sm:                                .75rem !default; // Custom variable
+$progress-height-lg:                                1.5rem !default; // Custom variable
+$progress-bg:                                       $gray-200 !default;
+$progress-border-radius:                            $border-radius !default;
+$progress-box-shadow:                               none !default;
+$progress-bar-color:                                $white !default;
+$progress-bar-bg:                                   $primary !default;
+$progress-bar-animation-timing:                     1s linear infinite !default;
+$progress-bar-transition:                           width .6s ease !default;
+
+// Badges
+$badge-padding-y:                   				.5em !default;
+$badge-padding-x:                   				.75em !default;
+$badge-font-size:                   				85% !default;
+
+
+// Code
+$code-bg:                                           $gray-100 !default; // Custom variable
+$code-padding:                                      .15rem .5rem !default; // Custom variable
+
+
+// Modals
+// Padding applied to the modal body
+$modal-inner-padding:                               1rem !default;
+$modal-dialog-margin:                               .5rem !default;
+$modal-dialog-margin-y-sm-up:                       1.75rem !default;
+$modal-title-color:                                 $dark !default; // Custom variable
+$modal-title-font-weight:                           500 !default; // Custom variable
+$modal-title-font-size:                             1.3rem !default; // Custom variable
+$modal-title-small-color:                           $text-muted !default; // Custom variable
+$modal-title-small-font-weight:                     400 !default; // Custom variable
+$modal-title-small-font-size:                       .9rem !default; // Custom variable
+$modal-title-close-font-size:                       1rem !default; // Custom variable
+$modal-title-close-color:                           $text-muted !default; // Custom variable
+$modal-title-close-hover-color:                     $primary !default; // Custom variable
+
+$modal-content-color:                               null !default;
+$modal-content-bg:                                  $white !default;
+$modal-content-border-color:                        rgba($black, .2) !default;
+$modal-content-border-radius:                       $border-radius-lg !default;
+$modal-content-box-shadow-xs:                       0 .25rem .5rem rgba($black, .5) !default;
+$modal-content-box-shadow-sm-up:                    0 .5rem 1rem rgba($black, .5) !default;
+
+$modal-backdrop-bg:                                 $black !default;
+$modal-backdrop-opacity:                            .5 !default;
+$modal-header-border-color:                         $border-color !default;
+$modal-footer-border-color:                         $modal-header-border-color !default;
+
+$modal-xl:                                          1140px !default;
+$modal-lg:                                          800px !default;
+$modal-md:                                          500px !default;
+$modal-sm:                                          300px !default;
+
+
+// Pagination
+$pagination-padding-y:                              .5rem !default;
+$pagination-padding-x:                              .75rem !default;
+$pagination-padding-y-sm:                           .25rem !default;
+$pagination-padding-x-sm:                           .5rem !default;
+$pagination-padding-y-lg:                           .75rem !default;
+$pagination-padding-x-lg:                           1.5rem !default;
+$pagination-line-height:                            1.25 !default;
+
+$pagination-color:                                  $link-color !default;
+$pagination-bg:                                     $white !default;
+$pagination-border-color:                           $gray-300 !default;
+
+$pagination-focus-box-shadow:                       none !default;
+$pagination-focus-outline:                          0 !default;
+
+$pagination-hover-color:                            $link-hover-color !default;
+$pagination-hover-bg:                               $gray-200 !default;
+$pagination-hover-border-color:                     $gray-300 !default;
+
+$pagination-disabled-color:                         $gray-600 !default;
+$pagination-disabled-bg:                            $white !default;
+$pagination-disabled-border-color:                  $gray-300 !default;
+
+// Alerts
+//
+// Define alert colors, border radius, and padding.
+$alert-box-shadow:                					$card-box-shadow !default; // Custom variable
+
+
+// Navs
+
+$nav-link-px:                                       1.5rem;
+$nav-link-py:                                       .75rem;
+$nav-btn-px:                                        1rem;
+$nav-section-py:                                    .5rem;
+$nav-elem-space:                                    .25rem;
+
+$nav-link-bg-hover:                                 $gray-100;
+$nav-link-bg-active:                                $gray-200;
+
+$nav-header-py:                                     1rem;
+$nav-footer-py:                                     1rem;
+
+$nav-font-size:                                     1rem;
+$nav-icon-size:                                     1.25rem;
+$nav-icon-width:                                    2rem;
+
+
+// Base icons(See: plugins/keenthemes-icons/font/ki.css)
+$ki-types: (
+	arrowDown: 	'\f109',
+	arrowUp: 	'\f10e',
+	arrowBack: 	'\f106',
+	arrowNext: 	'\f105',
+	boldClose: 	'\f113',
+	close: 		'\f130',
+	plus: 		'\f10d',
+	minus: 		'\f10a',
+	check: 		'\f108',
+	hide: 		'\f115',
+	code: 		'\f116',
+	copy: 		'\f117'
+) !default;
+
+// Heights & Widths
+$heights-and-widths: (
+  	100: 100%,
+  	50: 50%,
+  	auto: auto,
+  	1px: 1px,
+  	2px: 2px,
+  	3px: 3px,
+  	4px: 4px,
+  	5px: 5px,
+  	10px: 10px,
+  	15px: 15px,
+  	20px: 20px,
+  	25px: 25px,
+  	30px: 30px,
+  	35px: 35px,
+  	40px: 40px,
+  	45px: 45px,
+  	50px: 50px,
+  	55px: 55px,
+  	60px: 60px,
+  	65px: 65px,
+  	70px: 70px,
+  	75px: 75px,
+  	80px: 80px,
+  	85px: 85px,
+  	90px: 90px,
+  	95px: 95px,
+  	100px: 100px,
+  	105px: 105px,
+  	110px: 110px,
+  	115px: 115px,
+  	120px: 120px,
+  	125px: 125px,
+  	130px: 130px,
+  	135px: 135px,
+  	140px: 140px,
+  	145px: 145px,
+  	150px: 150px,
+  	175px: 175px,
+  	180px: 180px,
+  	200px: 200px,
+  	225px: 225px,
+  	250px: 250px,
+  	255px: 255px,
+  	260px: 260px,
+  	265px: 265px,
+  	275px: 275px,
+  	295px: 295px,
+  	300px: 300px,
+  	325px: 325px,
+  	350px: 350px,
+  	375px: 375px,
+  	400px: 400px,
+  	425px: 425px,
+  	450px: 450px,
+  	475px: 475px,
+  	500px: 500px,
+  	550px: 550px,
+  	600px: 600px,
+  	650px: 650px,
+  	700px: 700px,
+  	750px: 750px,
+  	800px: 800px,
+  	850px: 850px,
+  	900px: 900px,
+  	950px: 950px,
+  	1000px: 1000px,
+) !default;
+
+// Icon Sizes
+$icon-sizes: (
+    ss: .5rem,
+    xs: 065rem,
+    sm: .75rem,
+    nm: .9rem,
+	ms: 1.15rem,
+    md: 1.25rem,
+    lg: 1.5rem,
+    xl: 1.75rem,
+    xxl: 2.25rem,
+
+    1x: 1rem,
+    2x: 2rem,
+    3x: 3rem,
+    4x: 4rem,
+    5x: 5rem,
+    6x: 6rem,
+    7x: 7rem,
+    8x: 8rem,
+    9x: 9rem,
+    10x: 10rem
+);
+
+// SVG Icon Sizes
+$svg-icon-sizes: (
+    sm: 1.25rem,
+    md: 1.5rem,
+    lg: 1.75rem,
+    xl: 2rem,
+    xxl: 2.25rem,
+
+    1x: 1rem,
+    2x: 2rem,
+    3x: 3rem,
+    4x: 4rem,
+    5x: 5rem,
+    6x: 6rem,
+    7x: 7rem,
+    8x: 8rem,
+    9x: 9rem,
+	10x: 10rem,
+
+	full: 100%
+);
+
+// Symbol Sizes
+$symbol-sizes: (
+    20: 20px,
+    25: 25px,
+    30: 30px,
+    35: 35px,
+    40: 40px,
+    45: 45px,
+    default: 50px,
+    50: 50px,
+    55: 55px,
+    60: 60px,
+    65: 65px,
+    70: 70px,
+    75: 75px,
+    80: 80px,
+    85: 85px,
+    90: 90px,
+    95: 95px,
+    100:100px,
+    120:120px,
+    130:130px,
+    140:140px,
+    150:150px
+);
+
+// Burger Icon
+$burger-icon-config: (
+    width: 24px,
+    height: 24px,
+    transition: all .3s,
+    thickness: 3px,
+    space: 5px,
+    radius: 3px,
+    theme: (
+        default: $text-muted,
+        hover: $primary,
+        active: $primary
+    )
+) !default;
+
+// Accordion
+$accordion-config: (
+	card-spacer-x: 1.25rem,
+	card-spacer-y: 1rem,
+	card-title-font-size: 1.15rem,
+	card-icon-font-size: 1.4rem,
+	svg-toggle-width: 3rem
+) !default;
+
+// Bullet
+$bullet-config: (
+	border-radius: 2rem,
+	hor-width: 10px,
+	hor-height: 2px,
+	ver-width: 2px,
+	ver-height: 10px,
+	dot-size: 4px,
+	bar-width: 4px
+) !default;
+
+// Loader
+$loader-config: (
+	size: 1.4rem,
+	width: 2px,
+	size-sm: 1rem,
+	width-sm: 1px,
+	size-lg: 2rem,
+	width-lg: 3px
+) !default;
+
+// Spinner
+$spinner-config: (
+	size: 	1.5rem,
+	size-sm: 1.25rem,
+	size-lg: 2rem
+) !default;
+
+// Timeline
+$timeline-config: (
+	time-width: 60px,
+	badge-width: 30px
+) !default;
+
+// Timeline 3
+$timeline-3-config: (
+	media-size: 50px,
+	border-width: 2px
+) !default;
+
+// Timeline 5
+$timeline-5-config: (
+	media-size: 35px
+) !default;
+
+// Timeline 6
+$timeline-6-config: (
+	label-width: 50px,
+	bar-width: 40px,
+	badge-size: 13px,
+	bar-border-width: 4px,
+	border-color: $white
+) !default;
+
+// Navi
+$navi-config: (
+	link-px: 1.5rem,
+	link-py: .75rem,
+
+	header-px: 1.5rem,
+	header-py: .75rem,
+
+	footer-px: 1.5rem,
+	footer-py: .75rem,
+
+	section-px: 1.5rem,
+	section-py: .75rem,
+
+	link-elem-space: .75rem,
+
+	link-opacity-disabled: 06,
+
+	separator: $border-color,
+	border: $border-color,
+
+	link-bg-hover: $gray-100,
+	link-bg-active: $gray-100,
+
+	link-bullet-bg: $gray-300,
+	link-bullet-bg-hover: $primary,
+	link-bullet-bg-active: $primary,
+
+	link-text-font-size: 1rem,
+	link-text-font-size-lg: 1.1rem,
+	link-text-font-size-xl: 1.2rem,
+
+	link-text-color: $dark-75,
+	link-text-color-hover: $primary,
+	link-text-color-active: $primary,
+
+	link-icon-circle-width: 4rem,
+	link-icon-circle-width-lg: 4.5rem,
+	link-icon-circle-width-xl: 5rem,
+	link-icon-width: 2rem,
+	link-icon-width-lg: 3rem,
+	link-icon-width-xl: 4rem,
+
+	link-icon-font-size: 1.25rem,
+	link-icon-font-size-lg: 1.5rem,
+	link-icon-font-size-xl: 1.75rem,
+
+	link-icon-svg-size: 22px,
+	link-icon-svg-size-lg: 28px,
+	link-icon-svg-size-xl: 32px,
+
+	link-icon-color: $gray-500,
+	link-icon-light-color: $gray-400,
+	link-icon-color-hover: $primary,
+	link-icon-color-active: $primary,
+
+	link-icon-circle-bg: $gray-100,
+	link-icon-circle-bg-hover: $gray-200,
+	link-icon-circle-bg-active: $gray-200,
+
+	link-arrow-font-size: 06rem,
+	link-arrow-color: $gray-500,
+	link-arrow-color-hover: $primary,
+	link-arrow-color-active: $primary,
+) !default;
+
+// Checkbox
+$checkbox-config: (
+	transition: all .3s ease,
+	itemSpace: 1rem,
+	labelSpace: .75rem,
+	inlineItemSpace: .35rem,
+	types: (
+		solid: (
+			theme: (
+				base-color: $gray-200
+			),
+			sizes: (
+				default: (
+					base: 18px,
+					tick: 10px,
+				),
+				lg: (
+					base: 24px,
+					tick: 12px,
+				)
+			)
+		),
+		outline: (
+			theme: (
+				base-color: $gray-400
+			),
+			sizes: (
+				default: (
+					base: 18px,
+					tick:  10px,
+				),
+				lg: (
+					base: 24px,
+					tick: 12px,
+				)
+			)
+		)
+	)
+) !default;
+
+// Radio
+$radio-config: (
+	transition: all .3s ease,
+	itemSpace: 1rem,
+	inlineItemSpace: .35rem,
+	labelSpace: .75rem,
+	types: (
+		solid: (
+			theme: (
+				base-color: $gray-200
+			),
+			sizes: (
+				default: (
+					base: 18px,
+					tick:  6px,
+				),
+				lg: (
+					base: 24px,
+					tick:  8px,
+				)
+			)
+		),
+		outline: (
+			theme: (
+				base-color: $gray-400
+			),
+			sizes: (
+				default: (
+					base: 18px,
+					tick:  6px,
+				),
+				lg: (
+					base: 24px,
+					tick:  8px,
+				)
+			)
+		),
+		accent: (
+			borderWidth: 3px,
+			sizes: (
+				default: (
+					base: 24px,
+					tick: 14px,
+				),
+				lg: (
+					base: 30px,
+					tick:  10px,
+				)
+			)
+		)
+	)
+) !default;
+
+// Switch
+$switch-config: (
+	color: $gray-200,
+	tick: $primary
+) !default;
+
+// Scrolltop
+$scrolltop-config: (
+    bottom: (
+        desktop: 40px,
+        tablet-and-mobile: 30px
+    ),
+    right: (
+        desktop: 20px,
+        tablet-and-mobile: 15px
+    ),
+    size: (
+        desktop: 36px,
+        tablet-and-mobile: 30px
+    )
+) !default;
+
+// Sticky Toolbar
+$sticky-toolbar-config: (
+	z-index: 95
+) !default;
+
+// Offcanvas Base
+$offcanvas-base-config: (
+	offset: 20px,
+	transition: .3s ease
+) !default;
+
+// Datatable
+$datatable-config: (
+	// Base
+	spacer: 					$card-spacer-x,
+	bg: 						#fff,
+
+	// Scrollbar
+	scrollbar-bg: 				$gray-200,
+
+	// Head
+	head-bg: 					$gray-100,
+	head-color: 				$dark,
+	head-sorted-color: 			$primary,
+	head-icon-color: 			$primary,
+    head-compact-color:         $text-muted,
+    head-compact-font-size:     .9rem,
+    head-compact-text-transform:uppercase,
+    head-compact-font-weight:   600,
+    head-compact-letter-spacing:.1rem,
+
+	// Body cell
+	body-color: 				$dark-75,
+
+    // Cell padding
+    cell-padding-x:             1rem,
+    cell-padding-y:             1rem,
+    head-cell-padding-x:        1rem,
+    head-cell-padding-y:        .75rem,
+
+	// Row colors
+	row-border: 				$gray-200,
+	row-bg-even: 				transparent,
+	row-bg-hover: 				transparent,
+	row-bg-active: 				$gray-100,
+
+	// Lock table shadow
+	lock-shadow: 				0 10px 17px 5px rgba(#000, .075),
+
+	// Subtable
+	subtable-toggle-icon: 		$primary,
+	subtable-expanded-bg: 		$gray-100,
+	subtable-pager-pagel: 		$gray-100,
+	subtable-shadow: 			0 10px 15px 1px rgba(#000, .05),
+
+	detail-icon-color: 			$primary,
+	detail-icon-color-hover: 	$primary,
+
+	// Pagination colors
+    page-spacer:                1rem,
+	page-size: 					2.25rem,
+	page-bg:                    darken($gray-100, 2%),
+	page-bg-hover:              $primary,
+	page-bg-active:             $primary,
+
+	page-color: 				$dark-50,
+	page-color-hover: 			theme-inverse-color('primary'),
+	page-color-active: 			theme-inverse-color('primary'),
+
+    page-icon-color: 			$gray-500,
+	page-icon-color-hover: 		theme-inverse-color('primary'),
+	page-icon-color-active: 	theme-inverse-color('primary'),
+
+	page-info-bg: 				darken($gray-100, 2%),
+	page-info-bg-hover: 		$primary,
+	page-info-color: 			$dark-50,
+	page-info-color-hover:	 	theme-inverse-color('primary')
+) !default;
+
+
+// Custom Scroll(Perfect Scrollbar)
+$custom-scrollbar-size:                             4px !default;
+$custom-scrollbar-color:                            $gray-300 !default;
+
+
+
+// Root font size
+$root-font-size:                                    13px; // custom parameter
+$root-font-size-lg:                             	12px; // custom parameter
+$root-font-size-md:                             	12px; // custom parameter
+
+// Page Background Color
+$page-bg:	 										#F2F3F7 !default;
+
+// Page Paddings
+$page-padding: (
+	desktop: 25px, 			// Padding for desktop mode
+	tablet-and-mobile: 15px // Padding for tablet and mobile modes
+) !default;
+
+// Header
+$header-config: (
+	// Desktop Mode
+	desktop: (
+		bg-color: $primary,
+		height: 145px,
+		height-bottom: 75px,
+		shadow: 0 10px 30px 0 rgba(82,63,105, .08),
+		zindex: 97
+	),
+
+	// Tablet & Mobile Modes
+	tablet-and-mobile: (
+		bg-color: $primary,
+		height: 55px,
+		shadow: 0 1px 9px -3px rgba(0,0,0, .1),
+		zindex: 97,
+	)
+) !default;
+
+// Header Menu
+$header-menu-config: (
+	// Desktop Mode
+	desktop: (
+		// Base Parameters
+		base: (
+			class: header-menu, // menu element class name
+			mode: desktop // menu mode: "desktop", "desktop-and-tablet" or "general"
+		),
+
+		// Customize
+		build: (
+			// Layout
+			layout: (
+				// Container
+				self: (
+					margin: 0
+				),
+
+				// Item
+				item: (
+					// Item
+					self: (
+						padding: 0 .25rem
+					),
+
+					// Link
+					link: (
+						// self
+						self: (
+							padding: .25rem .5rem
+						),
+
+						// Icon
+						icon: (
+							width: 30px,
+							svg-width: 23px,
+							font-size: 1.4rem,
+							padding: 0
+						),
+
+						// Bullet
+						bullet:	(
+							self: (
+								width: 20px
+							),
+
+							dot: (
+								size: 4px,
+							),
+
+							line: (
+								width: 5px,
+								height: 1px,
+							)
+						),
+
+						// Text
+						text: (
+							font-size: 1rem,
+							font-weight: 400,
+							font-transform:	initial
+						),
+
+						// Label
+						label:	(
+							padding: 0 0 0 5px
+						),
+
+						// Arrow
+						arrow: (
+							width: 20px,
+							align: flex-end,
+							font-size: 06rem
+						)
+					),
+
+					// Submenu
+					submenu: (
+						// Submenu
+						self: (
+							zindex: get($header-config, desktop, zindex) + 1,
+							padding: (
+								classic: 20px 0,
+								megamenu: 0
+							),
+							border-radius: 4px,
+							width: (
+								classic: 275px,  // Classic dropdown menu width
+								// full width dropdown menu
+								full: (
+									offset: 20px
+								)
+							),
+							animation: (
+								offset: -10px
+							),
+							space: 1px
+						),
+
+						// Item
+						item: (
+							// Item
+							self: (
+								padding: 0
+							),
+
+							// Link
+							link: (
+								// Link
+								self: (
+									padding: 11px 30px,
+									padding-x: 30px
+								),
+
+								// Icon
+								icon: (
+									width: 33px,
+									svg-width: 23px,
+									font-size: 1.4rem,
+									padding: 0
+								),
+
+								// Bullet
+								bullet:	(
+									self: (
+										width: 20px
+									),
+
+									dot: (
+										size: 4px
+									),
+
+									line: (
+										width: 9px,
+										height: 1px
+									)
+								),
+
+								// Text
+								text: (
+									font-size: 1rem,
+									font-weight: 400,
+									font-transform:	initial
+								),
+
+								// Label
+								label:	(
+									padding: 0 0 0 5px
+								),
+
+								// Arrow
+								arrow: (
+									padding: 0 0 0 10px,
+									width: 20px,
+									font-size: 06rem
+								)
+							),
+
+							// Column
+							column: (
+								// Column
+								self: (
+									padding: 0 0 20px 0
+								),
+
+								// Heading
+								heading: (
+									// Heading
+									self: (
+										padding: 30px 30px 10px 30px
+									),
+
+									// Caption
+									caption: (
+										// Icon
+										icon: (
+											width: 30px,
+											svg-width: 23px,
+											font-size: 1.35rem,
+											padding: 0
+										),
+
+										// Text
+										text: (
+											font-size: 1.07rem,
+											font-weight: 500,
+											font-transform:	initial
+										),
+
+										// Label
+										label:	(
+											padding: 0 0 0 5px
+										)
+									)
+								)
+							)
+						)
+					)
+				)
+			),
+
+			// Theme
+			theme: (
+				// Item
+				item: (
+					// Link
+					link: (
+						// Link
+						self: (
+							bg-color: (
+								default: none,
+								active: none,
+								here: none,
+								hover: none
+							)
+						),
+
+						// Bullet
+						bullet:	(
+							dot: (
+								bg-color: (
+									default: $text-muted,
+									active: $primary,
+									here: $primary,
+									hover: $primary
+								)
+							),
+							line: (
+								bg-color:	(
+									default: $text-muted,
+									active: $primary,
+									here: $primary,
+									hover: $primary
+								)
+							)
+						),
+
+						// Text
+						text: (
+							font-color:	(
+								default: $dark-75,
+								active: $primary,
+								here: $primary,
+								hover: $primary
+							)
+						),
+
+						// Arrow
+						arrow: (
+							font-color:	(
+								default: $text-muted,
+								active: $primary,
+								here: $primary,
+								hover: $primary
+							)
+						)
+					),
+
+					// Submenu
+					submenu: (
+						// Submenu
+						self: (
+							bg-color: $white,
+							box-shadow: 0 15px 50px 0 rgba(82,63,105,.15)
+						),
+
+						// Item
+						item: (
+							link: (
+								self: (
+									bg-color: (
+										active: $gray-100,
+										here: $gray-100,
+										hover: $gray-100,
+									)
+								),
+
+								// Icon
+								icon: (
+									font-color:	(
+										default: $text-muted,
+										active: $primary,
+										here: $primary,
+										hover: $primary
+									)
+								),
+
+								// Bullet
+								bullet:	(
+									dot: (
+										bg-color: (
+											default: $text-muted,
+											active: $primary,
+											here: $primary,
+											hover: $primary
+										)
+									),
+									line: (
+										bg-color: (
+											default: $text-muted,
+											active: $primary,
+											here: $primary,
+											hover: $primary
+										)
+									)
+								),
+
+								// Text
+								text: (
+									font-color:	(
+										default: $dark-75,
+										active: $primary,
+										here: $primary,
+										hover: $primary
+									)
+								),
+
+								// Arrow
+								arrow: (
+									font-color:	(
+										default: $text-muted,
+										active: $primary,
+										here: $primary,
+										hover: $primary
+									)
+								)
+							),
+
+							// Column
+							column: (
+								// Separator
+								separator: (
+									border: 1px solid $gray-200
+								),
+
+								// Heading
+								heading: (
+									// Caption
+									caption: (
+										// Icon
+										icon: (
+											font-color:	$text-muted
+										),
+
+										// Text
+										text: (
+											font-color:	$dark
+										)
+									)
+								)
+							)
+						)
+					)
+				)
+			)
+		)
+	),
+
+	// Tablet & Mobile Modes
+	tablet-and-mobile: (
+		// Base Settings
+		base:	(
+			class: header-menu-mobile,
+			parent-class: header-navs,
+			mode: tablet-and-mobile, //menu mode: "mobile", "tablet-and-mobile" or "general"
+		),
+		// Customize
+		build: (
+			// Layout
+			layout: (
+				// Default Mode
+				default: (
+					// Menu Panel
+					self: (
+						padding: 10px 0
+					),
+
+					// Item
+					item: (
+						// Item
+						self: (
+							margin:	0
+						),
+
+						// Link
+						link: (
+							// Link
+							self: (
+								height: 44px,
+								padding: 9px 30px
+							),
+
+							// Icon
+							icon:	(
+								width: 35px,
+								font-size: 1.4rem
+							),
+
+							// Bullet
+							bullet:	(
+								self: (
+									width: 15px,
+								),
+
+								dot: (
+									size: 4px
+								),
+
+								line: (
+									width: 5px,
+									height: 1px
+								)
+							),
+
+							// Text
+							text:	(
+								font-size: 1.02rem,
+								font-weight: 400,
+								font-transform:	initial
+							),
+
+							// Arrow
+							arrow:	(
+								width: 20px,
+								transition: all .3s ease,
+								font-size: 06rem
+							),
+
+							// Label
+							label:	(
+								padding: 0 0 0 5px,
+								align: right
+							)
+						),
+
+						// Submenu
+						submenu: (
+							// Submenu
+							self: (
+								indent: 15px,
+								margin:	0
+							),
+
+							// Item
+							item: (
+								// Item
+								self: (
+									margin:	0
+								),
+
+								// Link
+								link: (
+									// Link
+									self: (
+										height: 40px,
+										padding: 0 30px,
+										padding-x: 30px
+									),
+
+									// Icon
+									icon:	(
+										width: 35px,
+										font-size: 1.35rem
+									),
+
+									// Bullet
+									bullet:	(
+										self: (
+											width: 20px,
+										),
+										dot: (
+											size: 4px
+										),
+										line: (
+											width: 5px,
+											height: 1px
+										)
+									),
+
+									// Text
+									text:	(
+										font-size: 1rem,
+										font-weight: 400,
+										font-transform:	initial
+									),
+
+									// Arrow
+									arrow:	(
+										width: 20px,
+										transition: all .3s ease,
+										font-size: 06rem
+									),
+
+									// Label
+									label:	(
+										padding: 0 0 0 5px
+									)
+								)
+							),
+
+							// Section
+							section: (
+								self: (
+									indent: 15px,
+									padding: 0 25px,
+									margin: 20px 0 0 0,
+									height: 40px
+								),
+
+								text: (
+									font-size: .8rem,
+									font-weight: 300,
+									font-transform: uppercase,
+									letter-spacing: .3px
+								),
+
+								icon: (
+									font-size: 1.1rem
+								)
+							),
+
+							// Separator
+							separator: (
+								margin: 15px 0
+							)
+						)
+					),
+
+					// Section
+					section: (
+						self: (
+							padding: 0 27px,
+							margin: 20px 0 0 0,
+							height: 40px
+						),
+
+						text: (
+							font-size: .83rem,
+							font-weight: 500,
+							font-transform: uppercase,
+							letter-spacing: .3px
+						),
+
+						icon: (
+							font-size: 1.1rem
+						)
+					),
+
+					// Separator
+					separator: (
+						margin: 15px 0,
+					)
+				)
+			),
+
+			// Themes
+			theme: (
+				// Default Mode
+				default: (
+					// Container
+					self: (
+						bg-color: $white
+					),
+
+					// root item
+					item: (
+						// Item
+						self: (
+							bg-color: (
+								default: null,
+								open: null,
+								here: null,
+								active: null,
+								hover: null
+							)
+						),
+						// Link
+						link: (
+							// Link
+							self: (
+								bg-color: (
+									default: null,
+									open: $gray-100,
+									here: $gray-100,
+									active: $gray-100,
+									hover: $gray-100
+								)
+							),
+							// Icon
+							icon: (
+								font-color:	(
+									default: $text-muted,
+									open: $primary,
+									here: $primary,
+									active: $primary,
+									hover: $primary
+								),
+							),
+							// Bullet
+							bullet:	(
+								dot: (
+									bg-color: (
+										default: $text-muted,
+										open: $primary,
+										here: $primary,
+										active: $primary,
+										hover: $primary
+									)
+								),
+								line: (
+									bg-color: (
+										default: $text-muted,
+										open: $primary,
+										here: $primary,
+										active: $primary,
+										hover: $primary
+									)
+								)
+							),
+							// Text
+							text:	(
+								font-color:	(
+									default: $dark-75,
+									open: $primary,
+									here: $primary,
+									active: $primary,
+									hover: $primary
+								)
+							),
+							// Arrow
+							arrow:	(
+								font-color:	(
+									default: $text-muted,
+									open: $primary,
+									here: $primary,
+									active: $primary,
+									hover: $primary
+								)
+							)
+						),
+
+						// Submenu
+						submenu: (
+							// Submenu
+							self: (
+								bg-color: (
+									default: null,
+									open: null,
+									active: null,
+									hover: null
+								)
+							),
+							// Item
+							item: (
+								// Item
+								self: (
+									bg-color: (
+										default: null,
+										open: null,
+										here: null,
+										active: null,
+										hover: null
+									)
+								),
+								// Link
+								link: (
+									// Link
+									self: (
+										bg-color: (
+											default: null,
+											open: $gray-100,
+											here: $gray-100,
+											active: $gray-100,
+											hover: $gray-100
+										)
+									),
+									// Icon
+									icon:	(
+										font-color:	(
+											default: $text-muted,
+											open: $primary,
+											active: $primary,
+											hover: $primary
+										)
+									),
+									// Bullet
+									bullet:	(
+										dot: (
+											bg-color: (
+												default: $text-muted,
+												open: $primary,
+												here: $primary,
+												active: $primary,
+												hover: $primary
+											)
+										),
+										line: (
+											bg-color: (
+												default: $text-muted,
+												open: $primary,
+												here: $primary,
+												active: $primary,
+												hover: $primary
+											)
+										)
+									),
+									// Text
+									text: (
+										font-color:	(
+											default: $dark-75,
+											open: $primary,
+											active: $primary,
+											hover: $primary
+										)
+									),
+
+									// Arrow
+									arrow:	(
+										font-color:	(
+											default: $text-muted,
+											open: $primary,
+											active: $primary,
+											hover: $primary
+										)
+									)
+								)
+							),
+
+							// Section
+							section: (
+								text: (
+									font-color: $dark-50
+								),
+								icon: (
+									font-color: $text-muted
+								)
+							),
+
+							// Separator
+							separator: (
+								border: 1px solid $gray-200
+							)
+						)
+					),
+
+					// Section
+					section: (
+						text: (
+							font-color: $dark-50
+						),
+						icon: (
+							font-color: $text-muted
+						)
+					),
+
+					// Separator
+					separator: (
+						border: 1px solid $gray-200
+					)
+				)
+			)
+		)
+	),
+
+	// Offcanvas Mobile
+	offcanvas-mobile: (
+		width: 275px,
+		zindex: 1001,
+		bg-color: #fff,
+		shadow: 0 1px 9px -3px rgba(0,0,0,.75),
+		overlay-bg-color: rgba(#000, .1)
+	)
+) !default;
+
+// Header Topbar
+$header-topbar-config: (
+	// Tablet & Mobile Modes
+	tablet-and-mobile: (
+		bg-color: $primary,
+		height: 50px,
+		shadow: 0 1px 9px -3px rgba(0,0,0, .1),
+		border-color: rgba($white, .1)
+	)
+) !default;
+
+// Aside
+$aside-config: (
+	// Aside
+	base: (
+		width: 265px,
+		zindex: 98,
+		scrollbar-width: 4px
+	),
+
+	// Aside's Offcanvas Config(see mixin: src/sass/components/mixins/-offcanvas.scss)
+	offcanvas-mobile: (
+		width: 275px,
+		zindex: 1001,
+		bg-color: #fff,
+		shadow: 0 1px 9px -3px rgba(0,0,0,.75),
+		overlay-bg-color: rgba(#000, .1)
+	)
+) !default;
+
+// Aside Menu
+$aside-menu-config: (
+	// Base parameters required to build the base menu(see mixin: src/sass/components/mixins/-menu-vertical.scss)
+	base:	(
+		class: aside-menu, // Menu element class name
+		parent-class: aside, // Menu parent aside element class name
+		mode: general, // Menu responsive mode: general or tablet-and-mobile
+	),
+
+	// Customize
+	build: (
+		// layout
+		layout: (
+			// Default Mode
+			default: (
+				// Container
+				self: (
+					padding: 15px 0
+				),
+
+				// Item
+				item: (
+					// Item
+					self: (
+						margin:	0
+					),
+
+					// Link
+					link: (
+						// Link
+						self: (
+							height: 44px,
+							padding: 9px 25px
+						),
+
+						// Icon
+						icon:	(
+							width: 35px,
+							svg-width: 23px,
+							font-size: 1.3rem
+						),
+
+						// Bullet
+						bullet:	(
+							self: (
+								width: 15px,
+							),
+
+							dot: (
+								size: 4px
+							),
+
+							line: (
+								width: 5px,
+								height: 1px
+							)
+						),
+
+						// Text
+						text:	(
+							font-size: 1rem,
+							font-weight: 400,
+							font-transform:	initial
+						),
+
+						// Arrow
+						arrow:	(
+							width: 20px,
+							transition: all .3s ease,
+							font-size: 06rem
+						),
+
+						// Label
+						label:	(
+							padding: 0 0 0 5px
+						)
+					),
+
+					// Submenu
+					submenu: (
+						// Submenu
+						self: (
+							indent: 15px,
+							margin:	0
+						),
+
+						// Item
+						item: (
+							// Item
+							self: (
+								margin:	0
+							),
+
+							// Link
+							link: (
+								// Link
+								self: (
+									height: 40px,
+									padding: 0 25px,
+									padding-x: 25px
+								),
+
+								// Icon
+								icon:	(
+									width: 35px,
+									svg-width: 24px,
+									font-size: 1.3rem
+								),
+
+								// Bullet
+								bullet:	(
+									self: (
+										width: 15px,
+									),
+
+									dot: (
+										size: 4px
+									),
+
+									line: (
+										width: 5px,
+										height: 1px
+									)
+								),
+
+								// Text
+								text:	(
+									font-size: 1rem,
+									font-weight: 400,
+									font-transform:	initial
+								),
+
+								// Arrow
+								arrow:	(
+									width: 20px,
+									transition: all .3s ease,
+									font-size: 06rem
+								),
+
+								// Label
+								label:	(
+									padding: 0 0 0 5px
+								)
+							)
+						),
+
+						// Section
+						section: (
+							self: (
+								indent: 15px,
+								padding: 0 25px,
+								margin: 20px 0 0 0,
+								height: 40px
+							),
+
+							text: (
+								font-size: .8rem,
+								font-weight: 300,
+								font-transform: uppercase,
+								letter-spacing: .3px
+							),
+
+							icon: (
+								font-size: 1.1rem
+							)
+						),
+
+						// Separator
+						separator: (
+							margin: 15px 0
+						)
+					)
+				),
+
+				// Section
+				section: (
+					self: (
+						padding: 0 25px,
+						margin: 20px 0 0 0,
+						height: 40px
+					),
+
+					text: (
+						font-size: .9rem,
+						font-weight: 500,
+						font-transform: uppercase,
+						letter-spacing: .3px
+					),
+
+					icon: (
+						font-size: 1.1rem
+					)
+				),
+
+				// Separator
+				separator: (
+					margin: 15px 0,
+				)
+			),
+
+			// Dropdown Mode
+			dropdown: (
+				// Item
+				item: (
+					// Item
+					self: (
+						margin: 0,
+						zindex:	get($header-config, desktop, zindex) + 1, // Aside's dropdown z-index has to be greater that fixed header's z-index
+					),
+
+					// Submenu
+					submenu: (
+						// Submenu
+						self: (
+							padding: 20px 0,
+							width: 265px, // Should be equal to the parent aside width
+							parent-width: 265px, // Should be equal to the parent aside width
+							border-radius: 4px,
+
+							// Animation
+							animation: (
+								offset: 10px
+							),
+
+							// Vertical Offset
+							offset: (
+								root: (
+									default: -5px,
+									up: -10px
+								),
+
+								inner: (
+									default: -10px,
+									up: -10px
+								)
+							)
+						),
+
+						// Item
+						item: (
+							// Item
+							self: (
+								margin:	0
+							),
+
+							// Link
+							link: (
+								// Link
+								self: (
+									height: 40px,
+									padding: 7px 30px
+								),
+
+								// Icon
+								icon:	(
+									width: 35px,
+									font-size: 1.35rem
+								),
+
+								// Bullet
+								bullet:	(
+									self: (
+										width: 15px,
+									),
+
+									dot: (
+										size: 4px
+									),
+
+									line: (
+										width: 5px,
+										height: 1px
+									)
+								),
+
+								// Text
+								text:	(
+									font-size: 1rem,
+									font-weight: 400,
+									font-transform:	initial
+								),
+
+								// Arrow
+								arrow:	(
+									width: 20px,
+									transition: all .3s ease,
+									font-size: 06rem
+								),
+
+								// Label
+								label:	(
+									padding: 0 0 0 5px,
+									align: right,
+								)
+							)
+						),
+
+						// Section
+						section: (
+							self: (
+								margin: 20px 0 0 0,
+								padding: 0 25px,
+								height: 40px
+							),
+
+							text: (
+								font-size: .8rem,
+								font-weight: 300,
+								font-transform: uppercase,
+							),
+
+							icon: (
+								font-size: 1.1rem,
+							)
+						),
+
+						// Separator
+						separator: (
+							margin: 15px 0,
+						)
+					)
+				)
+			)
+		),
+
+		// Theme
+		theme: (
+		    // Default Mode
+		    default: (
+		        // Dropdown
+		        self: (
+		            bg-color: $white
+		        ),
+
+		        // Item
+		        item: (
+		            // Item
+		            self: (
+		                bg-color: (
+		                    default: null,
+		                    open: null,
+		                    here: null,
+		                    active: null,
+		                    hover: null
+		                )
+		            ),
+
+		            // Link
+		            link: (
+		                // Link
+		                self: (
+		                    bg-color: (
+		                        default: null,
+		                        open: $gray-100,
+		                        here: $gray-100,
+		                        active: $gray-100,
+		                        hover: $gray-100
+		                    )
+		                ),
+
+		                // Icon
+		                icon: (
+		                    font-color:	(
+		                        default: $text-muted,
+		                        open: $primary,
+		                        here: $primary,
+		                        active: $primary,
+		                        hover: $primary
+		                    ),
+		                ),
+
+		                // Bullet
+		                bullet:	(
+		                    dot: (
+		                        bg-color: (
+		                            default: $text-muted,
+		                            open: $primary,
+		                            here: $primary,
+		                            active: $primary,
+		                            hover: $primary
+		                        )
+		                    ),
+
+		                    line: (
+		                        bg-color: (
+		                            default: $text-muted,
+		                            open: $primary,
+		                            here: $primary,
+		                            active: $primary,
+		                            hover: $primary
+		                        )
+		                    )
+		                ),
+
+		                // Text
+		                text:	(
+		                    font-color:	(
+		                        default: $dark-75,
+		                        open: $primary,
+		                        here: $primary,
+		                        active: $primary,
+		                        hover: $primary
+		                    )
+		                ),
+
+		                // Arrow
+		                arrow:	(
+		                    font-color:	(
+		                        default: $text-muted,
+		                        open: $primary,
+		                        here: $primary,
+		                        active: $primary,
+		                        hover: $primary
+		                    )
+		                )
+		            ),
+
+		            // Submenu
+		            submenu: (
+		                // Submenu
+		                self: (
+		                    bg-color: (
+		                        default: null,
+		                        open: null,
+		                        active: null,
+		                        hover: null
+		                    )
+		                ),
+
+		                // Item
+		                item: (
+		                    // Item
+		                    self: (
+		                        bg-color: (
+		                            default: null,
+		                            open: null,
+		                            here: null,
+		                            active: null,
+		                            hover: null
+		                        )
+		                    ),
+
+		                    // Link
+		                    link: (
+		                        // Link
+		                        self: (
+		                            bg-color: (
+		                                default: null,
+		                                open: $gray-100,
+		                                here: $gray-100,
+		                                active: $gray-100,
+		                                hover: $gray-100
+		                            )
+		                        ),
+
+		                        // Icon
+		                        icon:	(
+		                            font-color:	(
+		                                default: $text-muted,
+		                                open: $primary,
+		                                active: $primary,
+		                                hover: $primary
+		                            )
+		                        ),
+
+								// Bullet
+		                        bullet:	(
+		                            dot: (
+		                                bg-color: (
+		                                    default: $text-muted,
+		                                    open: $primary,
+		                                    here: $primary,
+		                                    active: $primary,
+		                                    hover: $primary
+		                                )
+		                            ),
+
+		                            line: (
+		                                bg-color: (
+		                                    default: $text-muted,
+		                                    open: $primary,
+		                                    here: $primary,
+		                                    active: $primary,
+		                                    hover: $primary
+		                                )
+		                            )
+		                        ),
+
+		                        // Text
+		                        text: (
+		                            font-color:	(
+		                                default: $dark-75,
+		                                open: $primary,
+		                                active: $primary,
+		                                hover: $primary
+		                            )
+		                        ),
+
+		                        // Arrow
+		                        arrow:	(
+		                            font-color:	(
+		                                default: $text-muted,
+		                                open: $primary,
+		                                active: $primary,
+		                                hover: $primary
+		                            )
+		                        )
+		                    )
+		                ),
+
+		                // Section
+		                section: (
+		                    text: (
+		                        font-color: $dark-50
+		                    ),
+
+		                    icon: (
+		                        font-color: $text-muted
+		                    )
+		                ),
+
+		                // Separator
+		                separator: (
+		                    border: 1px solid $gray-200
+		                )
+		            )
+		        ),
+
+		        // Section
+		        section: (
+		            text: (
+		                font-color: $dark-50
+		            ),
+		            icon: (
+		                font-color: $text-muted
+		            )
+		        ),
+
+		        // Separator
+		        separator: (
+		            border: 1px solid $gray-200
+		        )
+		    ),
+
+		    // Dropdown Mode
+		    dropdown: (
+		        // Item
+		        item: (
+		            // Submenu
+		            submenu: (
+		                // Submenu
+		                self: (
+		                    // submenu base styles
+		                    bg-color: $white,
+		                    box-shadow: 0 0 50px 0 rgba(82,63,105,.15),
+		                ),
+
+		                // Item
+		                item: (
+		                    // Item
+		                    self: (
+		                        bg-color: (
+		                            default: null,
+		                            open: null,
+		                            here: null,
+		                            active: null,
+		                            hover: null
+		                        )
+		                    ),
+
+		                    // Link
+		                    link: (
+		                        // Link
+		                        self: (
+		                            bg-color: (
+		                                default: null,
+		                                open: $gray-100,
+		                                here: $gray-100,
+		                                active: $gray-100,
+		                                hover: $gray-100
+		                            )
+		                        ),
+
+		                        // Icon
+		                        icon:	(
+		                            font-color:	(
+		                                default: $text-muted,
+		                                open: $primary,
+		                                active: $primary,
+		                                hover: $primary
+		                            )
+		                        ),
+
+		                        // Bullet
+		                        bullet:	(
+		                            dot: (
+		                                bg-color: (
+		                                    default: $text-muted,
+		                                    open: $primary,
+		                                    here: $primary,
+		                                    active: $primary,
+		                                    hover: $primary
+		                                )
+		                            ),
+		                            line: (
+		                                bg-color: (
+		                                    default: $text-muted,
+		                                    open: $primary,
+		                                    here: $primary,
+		                                    active: $primary,
+		                                    hover: $primary
+		                                )
+		                            )
+		                        ),
+
+		                        // Text
+		                        text: (
+		                            font-color:	(
+		                                default: $dark-75,
+		                                open: $primary,
+		                                active: $primary,
+		                                hover: $primary
+		                            )
+		                        ),
+
+		                        // Arrow
+		                        arrow:	(
+		                            font-color:	(
+		                                default: $text-muted,
+		                                open: $primary,
+		                                active: $primary,
+		                                hover: $primary
+		                            )
+		                        )
+		                    )
+		                ),
+
+		                // Section
+		                section: (
+		                    text: (
+		                        font-color: $dark-50
+		                    ),
+
+		                    icon: (
+		                        font-color: $text-muted
+		                    )
+		                ),
+
+		                // Separator
+		                separator: (
+		                    border: 1px solid $gray-200
+		                ) 
+		            )
+		        )
+		    )
+		)
+	)
+) !default;
+
+// Subheader
+$subheader-config: (
+	// Default Mode
+	default: (
+		bg-color: $white,
+		border-color: $gray-200,
+	),
+	// Fixed Subheader Mode
+	fixed: (
+		height: 54px,
+		shadow: 0 10px 30px 0 rgba(82,63,105,.08),
+		zindex: 95
+	)
+) !default;
+
+// Offcanvas
+$offcanvas-config: (
+	width: 375px, // Offcanvas panel's width
+	zindex: 1001, // Offcanvas panel's z-index
+	shadow: 0 1px 9px -3px rgba(0,0,0, .25), // Offcanvas panel's box shadow
+	bg-color: #fff, // Offcanvas panel's Background color
+	overlay-bg-color: rgba(#000, .1) // Offcanvas panel's overlay background color
+) !default;

@@ -1,0 +1,24 @@
+@import
+  'theme-variables',
+  'theme-mixins',
+  '../bootstrap/scss/functions',
+  '../bootstrap/scss/variables',
+  '../bootstrap/scss/card',
+  'components/card';
+
+.card {
+    &-title {
+        margin-bottom: 1rem;
+    }
+
+    &-success {
+        background: $white;
+        bottom: 0;
+        left: 0;
+        padding: 60px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 10;
+    }
+}

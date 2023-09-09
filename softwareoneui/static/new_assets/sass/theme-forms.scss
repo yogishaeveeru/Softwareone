@@ -1,0 +1,40 @@
+@import
+  'theme-variables',
+  'theme-mixins',
+  '../bootstrap/scss/functions',
+  '../bootstrap/scss/variables',
+  '../bootstrap/scss/mixins',
+  'components/variables.bootstrap',
+  '../bootstrap/scss/forms',
+  '../bootstrap/scss/input-group',
+  '../bootstrap/scss/button-group',
+  '../bootstrap/scss/custom-forms',
+  'components/forms',
+  'components/checkbox',
+  'components/radio';
+
+.checkbox {
+    &-inline {
+        .checkbox {
+            font-size: 14px;
+            margin-right: 16px;
+	}
+    }
+
+    > span {
+        background-color: $color-ebedf3 !important;
+        height: 14px;
+        margin-right: 5px;
+        width: 14px;
+
+        &::after {
+            height: 9px;
+            width: 5px;
+	 }
+    }
+
+    input:checked ~ span {
+        background-color: $color-047076 !important;
+    }
+}
+  

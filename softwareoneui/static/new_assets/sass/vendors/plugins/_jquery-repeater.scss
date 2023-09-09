@@ -1,0 +1,53 @@
+//
+// jQuery Repeater
+//
+
+// sass-lint:disable
+.repeater {
+  .repeater-row {
+    display: flex;
+    flex-wrap: wrap;
+
+    > input {
+      flex: 1;
+    }
+
+    .repeater-close {
+      background-color: transparent;
+      border: 0;
+    }
+
+    .form-text {
+      flex-basis: 100%;
+    }
+  }
+
+  .repeater-item {
+    position: relative;
+
+    .btn-icon {
+      height: auto;
+    }
+
+    &:first-child {
+      .form-control {
+        border-bottom-right-radius: .25rem;
+        border-top-right-radius: .25rem;
+      }
+
+      .input-group-append {
+        display: none;
+      }
+    }
+  }
+
+  .repeater-close {
+    &-align-right {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  }
+}
+
+

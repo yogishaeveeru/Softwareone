@@ -1,0 +1,54 @@
+@import 'theme-variables';
+
+.js-switch {
+    &-label {
+        cursor: pointer;
+    }
+
+    &-btn {
+        border: 1px solid $color-ddd;
+        border-radius: 10px;
+        display: inline-block;
+        height: 16px;
+        position: relative;
+        transition: all linear .1s;
+        width: 30px;
+
+        &::before {
+            background: $color-ddd;
+            border-radius: 10px;
+            content: '';
+            display: block;
+            height: 12px;
+            left: 2px;
+            position: absolute;
+            top: calc(50% - 6px);
+            transition: all linear .1s;
+            width: 12px;
+	}
+    }
+
+    &-text {
+        &::before {
+            content: attr(data-off);
+	}
+    }
+
+    input:checked + .js-switch-label .js-switch-text {
+        color: $success;
+
+        &::before {
+            content: attr(data-on);
+	}
+    }
+
+    input:checked + .js-switch-label .js-switch-btn {
+        background: $success;
+        border-color: $success;
+
+        &::before {
+            background: $white;
+            left: calc(100% - 13px);
+        }
+    }
+}

@@ -1,0 +1,48 @@
+{% extends 'profile.html' %}
+{% load static %}
+{% block content %}
+
+<div class="modal">
+    <form class="form">
+      <div class="separator">
+        <hr class="line">
+        <p>AWS ACCOUNT CREATE</p>
+        <hr class="line">
+      </div>
+
+      <div class="info--form">
+        <div class="input_container">
+          <label for="password_field" class="input_label">AWS Account No</label>
+          <input id="password_field" class="input_field" type="text" name="input-name" title="Inpit title" placeholder="0000 0000 0000 0000">
+        </div>
+
+        <div class="input_container">
+          <label for="password_field" class="input_label">AWS Account Name</label>
+          <input id="password_field" class="input_field" type="text" name="input-name" title="Inpit title" placeholder="Enter your full name">
+        </div>
+
+        <div class="input_container">
+          <label for="password_field" class="input_label">AWS Access Key</label>
+          <div class="split">
+            <input id="password_field" class="input_field" type="text" name="input-name" title="Inpit title" placeholder="* Access Key..">
+            <span id="password_field" class="input_field"><img class="img1" src="{% static 'img/aws-key.png' %}" height="60px" width="70px" alt="logo"></span>         
+          </div>
+        </div>
+
+        <div class="input_container">
+          <label for="password_field" class="input_label">AWS Secret key</label>
+          <div class="split">
+            <input id="password_field" class="input_field" type="text" name="input-name" title="Inpit title" placeholder="* Secret Key..">
+            <span id="password_field" class="input_field"><img class="img1" src="{% static 'img/aws-key.png' %}" height="60px" width="70px" alt="logo"></span>         
+          </div>
+        </div>
+      </div>
+
+      <button class="Reg--btn">Register</button>
+
+      <div class="aws-main">
+        <span><img class="img1" src="{% static 'img/aws-key-main.png' %}" height="300px" width="300px" alt="logo"></span>         
+      </div>
+    </form>
+</div>
+{% endblock content %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block style_n_title %}<title>Login</title>{% endblock %}
+
+{% block content %}
+<form class="form login" id="login-form" novalidate="novalidate">
+	<p class="head1">Login</p>
+
+	<input type="email" name="email"  placeholder="Username.." class="input e" id="username"/>
+	<input type="password" name='password' placeholder="Password.." class="input p" id="password"/>
+	<div class='btnin'>
+		<button class=" btnlog" id="submitBtn" >Sign In</button>
+		<a class=" btnup" href="{% url 'registration' %}">Sign Up</a>
+	</div>
+</form>
+	{% comment %} <div class="registerpage">
+		Create your account here👉 <a href="{% url 'register' %}" class="ml-2">Sign Up</a>
+	</div> {% endcomment %}
+{% endblock %}
+

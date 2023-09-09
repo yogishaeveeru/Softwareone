@@ -1,0 +1,84 @@
+<html>
+<head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block script %} {% endblock script %}
+    <link rel="icon" type="image/x-icon" href="{% static 'img/logo.jpg' %}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="{% static 'assets/plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'new_assets/css/theme.css' %}" rel="stylesheet" type="text/css"/>
+    {% block style_n_title %} <title>Home</title> {% endblock %}
+    {% block head_js %}
+    <script src="{% static 'assets/plugins/global/plugins.bundle.js' %}"></script>
+    <script>
+      const CURRENT_URL = '{{ request.path }}';
+      const LOGIN_URL = 'http://127.0.0.1:8000';
+      const MAIN_PAGE_URL = '{% url "profile" %}';
+      const PERMISSION_DENIED_IMAGE_STATIC_FILE_URL = '{% static "img/blur-image.png" %}';
+      const ONE_APP_BASE_URL = 'http://127.0.0.1:8000';
+    </script>
+    <script src="{% static 'js/softwareoneauth/base.js' %}"></script>
+    <!-- <script src="{% static 'js/softwareoneauth/loggedin_check.js' %}"></script> -->
+
+  {% endblock head_js %}
+</head>
+<body>
+    <div id='main'>
+
+      {% comment %} {/* bar */} {% endcomment %}
+      <div class='bar'>
+        <marquee scrollamount='20' behavior="" direction="right">
+          <div id='icon'>
+            <span>
+              <i id='arrow' class='bx bx-chevrons-right'></i>
+            </span>
+            <span>
+              <i id="arrow" class='bx bx-chevrons-right'></i>
+            </span>
+            <span>
+              <h1 class="acce">Acceleration</h1>
+            </span>
+            <span>
+              <i id='arrow' class='bx bx-chevrons-right'></i>
+            </span>
+            <span>
+              <i id='arrow' class='bx bx-chevrons-right'></i>
+            </span>
+          </div>
+        </marquee>
+      </div>
+
+      {% comment %} {/* image */} {% endcomment %}
+      <div>
+        <img class='img' style="height: 99.4vh; width: 100vw;" src="{% static 'img/one.jpg' %}"  alt="" />
+      </div>
+
+      {% comment %} {/* ONE */} {% endcomment %}
+      <div class='sof'></div>
+
+      <div>
+        <h2>we're one.</h2>
+      </div>
+      
+      <h3>software</h3>
+    
+      <div class='toa'>
+        <h1 class='t'>Thousands strong.</h1>
+        <h1 class='o'>One company.</h1>
+        <h1 class='a'>All in.</h1>
+      </div>
+
+      {% block content %}
+        
+      {% endblock  %}
+      
+    </div>
+
+      {% comment %} Signin/Sinup {% endcomment %}
+      {% comment %} <div class='inup'>
+          <a href="{% url 'register' %}" class="up">SignUp </a>
+          <a href="{% url 'login' %}" class='in'>Signin</a>
+      </div> {% endcomment %}
+      <script src="{% static 'js/softwareoneauth/login.js' %}"></script>
+</body>
+</html>

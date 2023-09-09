@@ -1,0 +1,109 @@
+
+// White colors
+$white: #fff !default; // Bootstrap variable
+// Gray colors
+$gray-100: #f3f6f9 !default;
+$gray-200: #ebedf3 !default;
+$gray-300: #e4e6ef !default;
+$gray-400: #d1d3e0 !default;
+$gray-500: #b5b5c3 !default;
+$gray-600: #7e8299 !default;
+$gray-700: #5e6278 !default;
+$gray-800: #3f4254 !default;
+$gray-900: #181c32 !default;
+
+// Dark colors
+$dark: $gray-900 !default;
+$dark-75: $gray-800 !default; // Custom variable
+$dark-65: $gray-700 !default; // Custom variable
+$dark-50: $gray-600 !default; // Custom variable
+$dark-25: $gray-400 !default; // Custom variable
+
+// Jenda Primary colors
+$primary: #047076 !default; // Bootstrap variable
+$primary-hover: #046267 !default; // Custom variable
+$primary-light: #3bbcc3 !default; // Custom variable
+$primary-inverse: $white !default; // Custom variable
+
+// Secondary colors
+$secondary: #10564f !default; // Bootstrap variable
+$secondary-hover: #0d4741 !default; // Custom variable
+$secondary-light: #27a094 !default; // Custom variable
+$secondary-inverse: $dark-75 !default; // Custom variable
+
+// Success colors
+$success: #27b668 !default; // Bootstrap variable
+$success-hover: #1f9254 !default; // Custom variable
+$success-light: #8ae8b5 !default; // Custom variable
+$success-inverse: $white !default; // Custom variable
+
+// Inco colors
+$info: #8950fc !default; // Bootstrap variable
+$info-hover: #7337ee !default; // Custom variable
+$info-light: #eee5ff !default; // Custom variable
+$info-inverse: $white !default; // Custom variable
+
+// Warning colors
+$warning: #ffa800 !default; // Bootstrap variable
+$warning-hover: #ee9d01 !default; // Custom variable
+$warning-light: #fff4de !default; // Custom variable
+$warning-inverse: $white !default; // Custom variable
+
+// Danger colors
+$danger: #f64e60 !default; // Bootstrap variable
+$danger-hover: #dc2e3a !default; // Custom variable
+$danger-light: #f8989f !default; // Custom variable
+$danger-inverse: $white !default; // Custom variable
+
+// Light colors
+$light: $gray-100 !default; // Bootstrap variable
+$light-hover: $gray-300 !default; // Custom variable
+$light-light: $gray-100 !default; // Custom variable
+$light-inverse: $gray-600 !default; // Custom variable
+
+
+// Root font size
+$root-font-size: 13px;
+$root-font-size-lg: 12px;
+$root-font-size-md: 12px;
+$font-weight-base: normal;
+$font-family-base: sans-serif;
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px // custom breakpoint,
+	    ) !default;
+$body-color: #3f4254 !default;
+$page-bg: #f2f3f7 !default;
+$page-padding: (
+  desktop: 25px,
+    tablet-and-mobile: 15px) !default;
+
+$header-config: (
+  // Desktop Mode
+  desktop:
+  (
+  bg-color: $primary,
+  height: 145px,
+  height-bottom: 75px,
+  shadow: 0 10px 30px 0 rgba(82, 63, 105, 0.08),
+  zindex: 97,
+  ),
+  // Tablet & Mobile Modes
+  tablet-and-mobile:
+  (
+  bg-color: $primary,
+  height: 55px,
+  shadow: 0 1px 9px -3px rgba(0, 0, 0, 0.1),
+  zindex: 97,
+  )
+  ) !default;
+@import
+  '../bootstrap/scss/mixins/breakpoints',
+  'components/mixins/burger-icon',
+  'components/mixins/ki',
+  'theme-components',
+  'layout/init';

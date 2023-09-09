@@ -1,0 +1,25 @@
+// 1: Initialize
+@import 'init';
+
+@import 'theme-framework';
+// 3: Components
+@import
+  'components/utilities',
+  'components/burger-icon',
+  'components/nav',
+  'components/buttons',
+  'components/dropdown',
+  'components/grid',
+  'components/label',
+  'components/list',
+  'components/navi',
+  'components/toggle';
+
+// 4: Plugins
+@import 'theme-plugin';
+
+// 5: Layout
+@import 'layout/init';
+////////////////////////////////////////////////////////////////
+///////////// DO NOT MODIFY ABOVE INCLUDE ORDER ////////////////
+////////////////////////////////////////////////////////////////

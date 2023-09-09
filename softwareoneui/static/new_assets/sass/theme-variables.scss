@@ -1,0 +1,460 @@
+$ki-types: (
+arrowDown: "\f109",
+arrowUp: "\f10e",
+arrowBack: "\f106",
+arrowNext: "\f105",
+boldClose: "\f113",
+close: "\f130",
+plus: "\f10d",
+minus: "\f10a",
+check: "\f108",
+hide: "\f115",
+code: "\f116",
+copy: "\f117",
+) !default;
+$modal-title-font-weight: normal;
+$modal-title-small-font-weight: normal;
+$modal-title-small-font-size: 1.25rem;
+$modal-title-font-size: 1.3rem;
+$modal-title-color: #181c32;
+$modal-title-small-color: #181c32;
+$modal-title-close-color: #3f4254;
+$modal-title-close-hover-color: #181c32;
+$color-white: #fff;
+$color-e8505b: #e8505b;
+$color-1bc5bd: #1bc5bd;
+$color-black: #000;
+$color-d0d0d0: #d0d0d0;
+$color-656565: #656565;
+$color-f6f6f6: #f6f6f6;
+$color-047076: #047076;
+$color-3699ff: #3699ff;
+$color-e4e6ef: #e4e6ef;
+$color-ebedf3: #ebedf3;
+$color-7e8299: #7e8299;
+$color-ecf1f6: #ecf1f6;
+$color-ccc: #ccc;
+$color-eee: #eee;
+$color-ddd: #ddd;
+$color-dbebed: #dbebed;
+$color-0073e9: #0073e9;
+$color-b5b5c3: #b5b5c3;
+$color-99b6b2: #99b6b2;
+$color-85e8b5: #85e8b5;
+$color-f8989f: #f8989f;
+$color-e8505b: #e8505b;
+$color-1bc5bd: #1bc5bd;
+$color-181c32: #181c32;
+$color-8950fc: #8950fc;
+$color-ffa800: #ffa800;
+$color-f64e60: #f64e60;
+$font-weight-base: normal;
+$black: #000 !default;
+$white: #fff !default;
+
+$gray-100: #f3f6f9 !default;
+$gray-200: #ebedf3 !default;
+$gray-300: #e4e6ef !default;
+$gray-400: #d1d3e0 !default;
+$gray-500: #b5b5c3 !default;
+$gray-600: #7e8299 !default;
+$gray-700: #5e6278 !default;
+$gray-800: #3f4254 !default;
+$gray-900: #181c32 !default;
+
+$dark: $gray-900 !default;
+$dark-75: $gray-800 !default;
+$dark-65: $gray-700 !default;
+$dark-50: $gray-600 !default;
+$dark-25: $gray-400 !default;
+
+$enable-rounded: true !default;
+$enable-shadows: true !default;
+
+$grays: (
+  "100": $gray-100,
+    "200": $gray-200,
+      "300": $gray-300,
+        "400": $gray-400,
+	  "500": $gray-500,
+	    "600": $gray-600,
+	      "700": $gray-700,
+	        "800": $gray-800,
+		  "900": $gray-900,
+		  ) !default;
+
+$dark: $dark !default; // Bootstrap variable
+$dark-hover: darken($dark, 3%) !default;
+$dark-light: $gray-400 !default;
+$dark-inverse: $white !default;
+
+$primary: #047076 !default; // Bootstrap variable
+$primary-hover: #046267 !default;
+$primary-light: #3bbcc3 !default;
+$primary-inverse: $white !default;
+
+$secondary: #10564f !default; // Bootstrap variable
+$secondary-hover: #0d4741 !default;
+$secondary-light: #27a094 !default;
+$secondary-inverse: $dark-75 !default;
+
+$success: #27b668 !default; // Bootstrap variable
+$success-hover: #1f9254 !default;
+$success-light: #8ae8b5 !default;
+$success-inverse: $white !default;
+
+$info: #8950fc !default; // Bootstrap variable
+$info-hover: #7337ee !default;
+$info-light: #eee5ff !default;
+$info-inverse: $white !default;
+
+$warning: #ffa800 !default; // Bootstrap variable
+$warning-hover: #ee9d01 !default;
+$warning-light: #fff4de !default;
+$warning-inverse: $white !default;
+
+$danger: #f64e60 !default; // Bootstrap variable
+$danger-hover: #dc2e3a !default;
+$danger-light: #f8989f !default;
+$danger-inverse: $white !default;
+
+$light: $gray-100 !default; // Bootstrap variable
+$light-hover: $gray-300 !default;
+$light-light: $gray-100 !default;
+$light-inverse: $gray-600 !default;
+$zindex-modal: 1050 !default;
+$white: $white !default; // Bootstrap variable
+$white-hover: $gray-100 !default;
+$white-light: $white !default;
+$white-inverse: $dark-75 !default;
+$text-muted: $gray-500 !default;
+$border-radius-sm: 0.28rem !default;
+$border-radius: 0.42rem !default;
+$border-radius-lg: 0.85rem !default;
+$border-radius-xl: 1.25rem !default;
+$transition: all 0.15s ease !default;
+$transition-link: color 0.15s ease, background-color 0.15s ease,
+  border-color 0.15s ease, box-shadow 0.15s ease !default;
+  $transition-input: color 0.15s ease, background-color 0.15s ease,
+    border-color 0.15s ease, box-shadow 0.15s ease !default; 
+$card-box-shadow: 0 0 30px 0 rgba(82, 63, 105, 0.05) !default; // card custom shadow
+$card-border-color: $gray-200 !default;
+$card-cap-bg: $white !default;
+$card-spacer-y: 2rem !default;
+$card-spacer-x: 2.25rem !default;
+$card-border-radius: $border-radius !default;
+$card-header-spacer-y: 0.5rem !default;
+$card-header-height: 70px !default;
+$card-sticky-header-bg: $white !default;
+$card-sticky-header-height: 70px !default;
+$card-sticky-zindex: 101 !default;
+$card-sticky-shadow: 0 1px 15px 1px rgba(69, 65, 78, 0.1) !default; 
+$checkbox-config: (
+transition: all 0.3s ease,
+itemSpace: 1rem,
+labelSpace: 0.75rem,
+inlineItemSpace: 0.35rem,
+types: (
+solid: (
+theme: (
+base-color: $gray-200,
+),
+sizes: (
+default: (
+base: 18px,
+tick: 10px,
+),
+lg: (
+base: 24px,
+tick: 12px,
+),
+),
+),
+outline: (
+theme: (
+base-color: $gray-400,
+),
+sizes: (
+default: (
+base: 18px,
+tick: 10px,
+),
+lg: (
+base: 24px,
+tick: 12px,
+),
+),
+),
+),
+) !default;
+$radio-config: (
+transition: all 0.3s ease,
+itemSpace: 1rem,
+inlineItemSpace: 0.35rem,
+labelSpace: 0.75rem,
+types: (
+solid: (
+theme: (
+base-color: $gray-200,
+),
+sizes: (
+default: (
+base: 18px,
+tick: 6px,
+),
+lg: (
+base: 24px,
+tick: 8px,
+),
+),
+),
+outline: (
+theme: (
+base-color: $gray-400,
+),
+sizes: (
+default: (
+base: 18px,
+tick: 6px,
+),
+lg: (
+base: 24px,
+tick: 8px,
+),
+),
+    ),
+    accent: (
+    borderWidth: 3px,
+    sizes: (
+    default: (
+    base: 24px,
+    tick: 14px,
+    ),
+    lg: (
+    base: 30px,
+    tick: 10px,
+    ),
+    ),
+    ),
+    ),
+    ) !default;
+$datatable-config: (
+  // Base
+    spacer: $card-spacer-x,
+      bg: #fff,
+        // Scrollbar
+	  scrollbar-bg: $gray-200,
+	    // Head
+	      head-bg: $gray-100,
+	        head-color: $dark,
+		  head-sorted-color: $primary,
+		    head-icon-color: $primary,
+		      head-compact-color: $text-muted,
+		        head-compact-font-size: 0.9rem,
+			  head-compact-text-transform: uppercase,
+			    head-compact-font-weight: 600,
+			      head-compact-letter-spacing: 0.1rem,
+			        // Body cell
+				  body-color: $dark-75,
+				    // Cell padding
+				      cell-padding-x: 1rem,
+				        cell-padding-y: 1rem,
+					  head-cell-padding-x: 1rem,
+					    head-cell-padding-y: 0.75rem,
+					      // Row colors
+					        row-border: $gray-200,
+						  row-bg-even: transparent,
+						    row-bg-hover: transparent,
+						      row-bg-active: $gray-100,
+						        // Lock table shadow
+							  lock-shadow: 0 10px 17px 5px rgba(#000, 0.075),
+							    // Subtable
+							      subtable-toggle-icon: $primary,
+							        subtable-expanded-bg: $gray-100,
+								  subtable-pager-pagel: $gray-100,
+								    subtable-shadow: 0 10px 15px 1px rgba(#000, 0.05),
+								      detail-icon-color: $primary,
+								        detail-icon-color-hover: $primary,
+									  // Pagination colors
+									    page-spacer: 1rem,
+									      page-size: 2.25rem,
+									        page-bg: darken($gray-100, 2%),
+										  page-bg-hover: $primary,
+										    page-bg-active: $primary,
+										      page-color: $dark-50,
+										        page-color-hover: theme-inverse-color("primary"),
+											  page-color-active: theme-inverse-color("primary"),
+											    page-icon-color: $gray-500,
+											      page-icon-color-hover: theme-inverse-color("primary"),
+											        page-icon-color-active: theme-inverse-color("primary"),
+												  page-info-bg: darken($gray-100, 2%),
+												    page-info-bg-hover: $primary,
+												      page-info-color: $dark-50,
+												        page-info-color-hover: theme-inverse-color("primary")
+													) !default;
+													
+$table-bg: transparent !default;
+$table-accent-bg: $gray-200 !default;
+$table-hover-bg: $gray-300 !default;
+$table-active-bg: $table-hover-bg !default;
+
+$table-border-color: $gray-200 !default;
+$table-head-bg: $gray-100 !default;
+$table-head-color: $dark-75 !default;
+$table-head-font-size: 1rem !default;
+$table-head-font-weight: 600 !default;
+
+$table-dark-color: $white !default;
+$table-dark-bg: $dark !default;
+$table-dark-accent-bg: rgba($white, 0.05) !default;
+$table-dark-hover-color: $table-dark-color !default;
+$table-dark-hover-bg: rgba($white, 0.075) !default;
+$table-dark-border-color: lighten($table-dark-bg, 7.5%) !default;
+$border-radius-sm: 0.28rem !default;
+$border-radius: 0.42rem !default;
+$border-radius-lg: 0.85rem !default;
+$border-radius-xl: 1.25rem !default;
+$table-head-bg: $gray-100 !default;
+$table-compact-head-font-size: 0.9rem !default;
+$table-compact-head-color: $text-muted !default;
+$table-compact-head-text-transform: uppercase !default;
+$table-compact-head-font-weight: 600 !default;
+$table-compact-head-font-weight: 600 !default;
+$table-compact-head-letter-spacing: 0.1rem !default;
+$theme-colors: (
+  "white": $white,
+    // custom color type
+      "primary": $primary,
+        "secondary": $secondary,
+	  "success": $success,
+	    "info": $info,
+	      "warning": $warning,
+	        "danger": $danger,
+		  "light": $light,
+		    "dark": $dark,
+		    ) !default;
+
+$theme-hover-colors: (
+  "white": $white-hover,
+    // custom color type
+      "primary": $primary-hover,
+        "secondary": $secondary-hover,
+	  "success": $success-hover,
+	    "info": $info-hover,
+	      "warning": $warning-hover,
+	        "danger": $danger-hover,
+		  "light": $light-hover,
+		    "dark": $dark-hover,
+		    ) !default;
+
+$theme-inverse-colors: (
+  "white": $white-inverse,
+    "primary": $primary-inverse,
+      "secondary": $secondary-inverse,
+        "success": $success-inverse,
+	  "info": $info-inverse,
+	    "warning": $warning-inverse,
+	      "danger": $danger-inverse,
+	        "light": $light-inverse,
+		  "dark": $dark-inverse,
+		  ) !default;
+
+$theme-outline-inverse-colors: (
+  "white": $white,
+    "primary": $primary,
+      "secondary": $dark-75,
+        "success": $success,
+	  "info": $info,
+	    "warning": $warning,
+	      "danger": $danger,
+	        "light": $dark-75,
+		  "dark": $dark,
+		  ) !default;
+
+$theme-light-colors: (
+  "white": $white-light,
+    "primary": $primary-light,
+      "secondary": $secondary-light,
+        "success": $success-light,
+	  "info": $info-light,
+	    "warning": $warning-light,
+	      "danger": $danger-light,
+	        "light": $light-light,
+		  "dark": $dark-light,
+		  ) !default;
+
+$theme-shadow-colors: (
+  "white": $dark,
+    "primary": $primary,
+      "secondary": $dark,
+        "success": $success,
+	  "info": $info,
+	    "warning": $warning,
+	      "danger": $danger,
+	        "light": $dark,
+		  "dark": $dark,
+		  ) !default;
+
+$theme-text-colors: (
+  "white": $white,
+    "primary": $primary,
+      "secondary": $dark,
+        "success": $success,
+	  "info": $info,
+	    "warning": $warning,
+	      "danger": $danger,
+	        "light": $light,
+		  "dark": $dark,
+		    "dark-75": $dark-75,
+		      "dark-65": $dark-65,
+		        "dark-50": $dark-50,
+			  "dark-25": $dark-25,
+			    "muted": $text-muted,
+			    ) !default;
+
+$grid-breakpoints: (
+  xs: 0,
+    sm: 576px,
+      md: 768px,
+        lg: 992px,
+	  xl: 1200px,
+	    xxl: 1400px // custom breakpoint,
+	    ) !default;
+
+$container-max-widths: (
+  sm: 540px,
+    md: 720px,
+      lg: 960px,
+        xl: 1140px,
+	  xxl: 1340px,
+	  ) !default;
+
+$grid-columns: 12 !default;
+$grid-gutter-width: 25px !default;
+$grid-divider-bg: $gray-200 !default;
+
+$font-family-base: Poppins, Helvetica, "sans-serif" !default;
+
+$svg-icon-sizes: (
+  sm: 1.25rem,
+    md: 1.5rem,
+      lg: 1.75rem,
+        xl: 2rem,
+	  xxl: 2.25rem,
+	    1x: 1rem,
+	      2x: 2rem,
+	        3x: 3rem,
+		  4x: 4rem,
+		    5x: 5rem,
+		      6x: 6rem,
+		        7x: 7rem,
+			  8x: 8rem,
+			    9x: 9rem,
+			      10x: 10rem,
+			        full: 100%,
+				);
+
+$switch-config: (
+  color: $gray-200,
+    tick: $primary,
+    ) !default;

@@ -1,0 +1,232 @@
+//
+// Tagify
+//
+
+.tagify {
+  @include border-radius($border-radius);
+  border-color: $input-border-color;
+  padding: 0;
+  display: flex;
+  height: auto;
+
+  &:hover {
+	border-color: $input-border-color;
+  }
+
+  &.tagify--focus {
+	border: 1px solid $input-focus-border-color;
+  }
+
+  .tagify-tag {
+	background-color: $gray-200;
+	display: inline-flex;
+	align-items: center;
+	padding: 0 .5rem;
+	@include border-radius($border-radius);
+
+	div {
+	  order: 1;
+	  padding-right: .25rem;
+
+	  .tagify-tag-text {
+		color: $dark-50;
+		font-weight: 400;
+	  }
+
+	  &:before {
+		box-shadow: none !important;
+		animation: none;
+		transition: none;
+	  }
+	}
+
+	.tagify-tag-removeBtn {
+	  display: flex;
+	  align-items: center;
+	  order: 2;
+	  transform: none;
+	  position: static;
+	  border-radius: 0;
+	  margin-left: .25rem;
+	  margin-right: 0;
+	  line-height: 0;
+
+	  &:after {
+		transition: $transition-link;
+		line-height: 0;
+		@include ki(get($ki-types, close));
+		font-size: 06rem;
+		color: $text-muted;
+	  }
+
+	  &:hover {
+		background: transparent;
+		color: $primary;
+
+		& + div > span {
+		  opacity: .4;
+		}
+
+		&:after {
+		  transition: $transition-link;
+		  color: $primary;
+		}
+	  }
+	}
+
+	// State colors
+	@each $name, $color in $theme-colors {
+	  &.tagify-tag--#{$name}:not(.tagify--notAllowed) {
+		background-color: $color;
+
+		div {
+		  .tagify-tag-text {
+			color: $white;
+			font-weight: 500;
+		  }
+		}
+
+		.tagify-tag-removeBtn {
+		  &:after {
+			color: $white;
+		  }
+
+		  &:hover {
+			background: transparent;
+			color: $white;
+
+			& + div > span {
+			  opacity: .3;
+			}
+		  }
+		}
+	  }
+
+	  &.tagify-tag-light--#{$name}:not(.tagify--notAllowed) {
+		background-color: rgba($color, .12);
+
+		div {
+		  .tagify-tag-text {
+			color: $color;
+			font-weight: 500;
+		  }
+		}
+
+		.tagify-tag-removeBtn {
+		  &:after {
+			color: $color;
+		  }
+
+		  &:hover {
+			background: transparent;
+			color: $white;
+
+			& + div > span {
+			  opacity: .3;
+			}
+		  }
+		}
+	  }
+	}
+
+	// Not Allowed Mode
+	&.tagify--notAllowed {
+	  background-color: $danger;
+
+	  div {
+		&:before {
+		  box-shadow: none !important;
+		  animation: none;
+		  transition: none;
+		}
+
+		.tagify-tag-text {
+		  color: $danger-inverse;
+		  opacity: .75;
+		}
+	  }
+
+	  .tagify-tag-removeBtn {
+		&:after {
+		  opacity: .5;
+		  color: $danger-inverse;
+		}
+
+		&:hover {
+		  background: transparent;
+		  color: $danger-inverse;
+
+		  & + div > span {
+			opacity: .3;
+		  }
+		}
+	  }
+	}
+  }
+}
+
+.tagify[readonly] .tagify-tag-removeBtn {
+  display: none;
+}
+
+.tagify-input {
+  color: $input-plaintext-color;
+
+  &::before {
+	top: auto;
+	bottom: auto;
+	height: auto;
+	position: relative;
+  }
+}
+
+.tagify-input ~ .tagify.form-control {
+  margin: 1rem;
+  padding: 0;
+  @include button-reset();
+}
+
+.tagify-input.form-control {
+  margin: 0;
+}
+
+.tagify-input--outside {
+  display: block;
+  max-width: 600px;
+  border: 1px solid $gray-200;
+  margin-top: 1.5em;
+  margin-bottom: 1em;
+}
+
+.tagify-dropdown {
+  box-shadow: $dropdown-box-shadow;
+  background: $white;
+  border: 0 !important;
+  outline: none !important;
+  padding: .75rem 0;
+  z-index: $zindex-dropdown;
+  @include border-radius($border-radius);
+
+  .modal-open & {
+	z-index: $zindex-modal + 1;
+  }
+
+  .tagify-dropdown-wrapper {
+	border: 0 !important;
+	outline: none !important;
+	box-shadow: none;
+  }
+
+  .tagify-dropdown-item {
+	color: $dark-75;
+	border-radius: 0;
+	padding: .75rem 1.5rem;
+	margin: 0;
+	box-shadow: none;
+
+	&.tagify-dropdown-item--active {
+	  background: $gray-100;
+	  color: $primary;
+	}
+  }
+}

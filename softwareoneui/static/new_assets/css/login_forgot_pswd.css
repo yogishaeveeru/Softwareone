@@ -1,0 +1,110 @@
+
+body{
+    background:url("../../img/blue-bg.png");
+    background-size: cover;
+    background-color:var(--bs-dark-primary);
+ }
+a:focus-visible {
+    outline: none;
+}
+
+.logo{
+    max-width:165px;
+    margin:0 auto;
+}
+
+.login-content h3{
+    font-size: 32px;
+}
+.form-control, .form-control:focus {
+    line-height: 1.8rem;
+}
+
+.form-control, .form-control:focus, .input-group-text{
+    background: rgb(0 0 0 / 22%);
+    color: rgba(255, 255, 255, 0.28);
+}
+.form-control::-webkit-input-placeholder { /* Edge */
+    color: rgba(255, 255, 255, 0.28);
+}
+
+.form-control:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: rgba(255, 255, 255, 0.28);
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.28);
+}
+.input-group>:not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback){
+    margin:0 !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active{
+    -webkit-text-fill-color:  rgba(255, 255, 255, 0.28) !important;
+    -webkit-box-shadow: 0 0 0 30px var(--bs-darker-primary) inset !important;
+    outline-offset: -1px;
+    outline: 1px solid var(--bs-darker-primary);
+    transition: none;
+}
+
+.btn-check:active+.btn.btn-white, .btn-check:checked+.btn.btn-white, .btn.btn-white.active, .btn.btn-white.show, .btn.btn-white:active:not(.btn-active), .btn.btn-white:focus:not(.btn-active), .btn.btn-white:hover:not(.btn-active), .show>.btn.btn-white{
+    background: transparent !important;
+    color: #fff !important;
+}
+.input-group{
+    border: 1px solid rgb(226 228 235 / 1%);
+    border-radius: 0.42rem;
+}
+
+.btn.btn-light:hover:not(.btn-text):not(:disabled):not(.disabled), .btn.btn-light:not(:disabled):not(.disabled):active:not(.btn-text), .btn.btn-light:focus:not(.btn-text){
+    color:#fff;
+    background:#02595e;
+    opacity: 1;
+}
+
+.login-content{
+    max-width: 350px;
+    margin:0 auto;
+}
+
+.login-content a{
+    color:rgb(225 225 225 /40%);
+}
+
+.login-content a:hover{
+    color:rgb(225 225 225 / 100%);
+}
+
+/*---------------responsive----------------*/
+
+@media (max-width:991px){
+    .content {
+	padding: 25px 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .logo{
+	max-width: 140px;
+    }
+   
+    .login-content h3 {
+	font-size: 28px;
+	margin-bottom: 0;
+    }
+}
+
+@media (max-width: 412px) {
+    .login-content h3 {
+	font-size: 25px;
+    }
+    .logo{
+	max-width: 120px;
+    }
+}
+
+
+
