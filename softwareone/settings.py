@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-ye$@2m0oobh6_k70@0=w*-2o8abx6nwd@8f)8tjts-m$pqe*jt
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1","52.5.63.50"]
 
 
 # Application definition
@@ -64,6 +64,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'softwareone.context_processor.config',
             ],
         },
     },
@@ -183,3 +184,6 @@ EMAIL_USE_TLS=True
 EMAIL_PORT=587
 EMAIL_HOST_USER='gokuachari@gmail.com'
 EMAIL_HOST_PASSWORD='leulspdiycfihipu'
+
+# S_ONE_BASE_URL="http://127.0.0.1:8000"
+S_ONE_BASE_URL="http://52.5.63.50:8000"

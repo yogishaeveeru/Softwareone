@@ -1,6 +1,3 @@
-// $('#regBtn').on('click', function () {
-
-// })
 
 $(document).ready(function() {
     $("#regForm").submit(function(event) {
@@ -15,7 +12,6 @@ $(document).ready(function() {
             }
             data[$(this).attr("name")]=$(this).val()
         });
-        console.log("data",data)
         if (isEmpty) {
             toastr.error("Please fill in all fields.");
         } else {
@@ -24,6 +20,7 @@ $(document).ready(function() {
                     type: 'POST',
                     url: ONE_APP_BASE_URL + ONE_APP_APIS.customers,
                 }).done(function (data) {
+                    $("#regForm").trigger('reset');
                     toastr.success("Registered successfully")
                 })
     }
