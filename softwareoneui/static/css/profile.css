@@ -18,12 +18,16 @@
   align-items: center;
   border-bottom: 1px solid #000000;
 }
-
-.icon-home a{
-  position: relative;
-  left: 760px;
-  color: #000000;
+.right-nav{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
+/* .icon-home a{
+  position: absolute;
+  left: 90vw;
+  color: #000000;
+} */
 
 .user{
   display: flex;
@@ -32,7 +36,7 @@
   border-radius: 10px;
   border:1px solid #000000;
   position: relative;
-  right: 70px;
+  /* right: 70px; */
 }
 
 .mail{

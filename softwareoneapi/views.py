@@ -1,6 +1,8 @@
 from rest_framework import exceptions, status
+import io
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from botocore.exceptions import NoCredentialsError
 from softwareoneapi.viewsets import (
     ActionSerializerMixin,
     BaseModelViewset,
@@ -13,7 +15,7 @@ from rest_framework.decorators import action
 from softwareoneapi.models import Customer
 from softwareoneapi.serializers import CustomerSerializer, ListCustomerSerializer
 from softwareoneapi.access_policy import CustomerAccessPolicy
-from softwareoneapi.utils import get_s3_connection
+from softwareoneapi.utils import get_s3_connection, get_ec2_connection
 
 class BaseCreateAPIView(APIView):
     """
@@ -25,7 +27,7 @@ class BaseCreateAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class CustomerViewSet(ActionSerializerMixin,ListRetrieveViewset):
+class CustomerViewSet(ActionSerializerMixin,BaseModelViewset):
     access_policy = CustomerAccessPolicy
     queryset = Customer.objects.values()
     model=Customer
@@ -46,6 +48,10 @@ class CustomerViewSet(ActionSerializerMixin,ListRetrieveViewset):
 
         return self.access_policy.scope_queryset(self.request, actions.get(self.action, self.queryset))
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
     @action(detail=True, methods=["get"], url_path="get-files")
     def get_files(self, request, pk=None):
         """
@@ -53,9 +59,7 @@ class CustomerViewSet(ActionSerializerMixin,ListRetrieveViewset):
         """
         customer = self.get_object()
         s3_client = get_s3_connection(customer)
-        # bucket_name = request.query_params.get("bucket_name")
-        bucket_name="gokul3"
-        print("bucket_name",bucket_name)
+        bucket_name = request.query_params.get("bucket_name")
         key = request.query_params.get("key")
         if key:
             url = s3_client.generate_presigned_url(
@@ -63,10 +67,8 @@ class CustomerViewSet(ActionSerializerMixin,ListRetrieveViewset):
                 Params={'Bucket': bucket_name, 'Key': key},
                 ExpiresIn=3600,
             )
-            print("url",url)
             return Response({"url":url})
         response_data = []
-
         paginator = s3_client.get_paginator('list_objects_v2')
         page_iterator = paginator.paginate(Bucket=bucket_name)
         count=1
@@ -103,24 +105,27 @@ class CustomerViewSet(ActionSerializerMixin,ListRetrieveViewset):
     @action(detail=True, methods=["get"], url_path="create-bucket")
     def create_bucket(self, request, pk=None):
         """
-        Used to create bucket
+        Used to create a bucket
         """
         customer = self.get_object()
         bucket_name = request.query_params.get("bucket_name")
         if not bucket_name:
             raise exceptions.ValidationError({"detail": "Bucket name is required"})
         s3_client = get_s3_connection(customer)
-        try:
-            s3_client.head_bucket(Bucket=bucket_name)
+        existing_buckets = s3_client.list_buckets()
+        existing_bucket_names = [bucket['Name'] for bucket in existing_buckets['Buckets']]
+        if bucket_name in existing_bucket_names:
             raise exceptions.ValidationError({"detail": f"Bucket '{bucket_name}' already exists."})
-        except s3_client.exceptions.NoSuchBucket:
-            try:
-                s3_client.create_bucket(Bucket=bucket_name)
-                return Response({"detail": f"Bucket '{bucket_name}' created successfully."})
-            except Exception as error:
-                raise exceptions.ValidationError({"detail": str(error)})
-            
-    @action(detail=True, methods=["get"], url_path="upload-file")
+        try:
+        # Create the bucket
+            s3_client.create_bucket(Bucket=bucket_name)
+            return Response({"detail": f"Bucket '{bucket_name}' created successfully."})
+        except NoCredentialsError:
+            raise exceptions.ValidationError({'detail': 'AWS credentials are not provided or are invalid'})
+        except Exception as error:
+            raise exceptions.ValidationError({"detail": str(error)})
+    
+    @action(detail=True, methods=["post"], url_path="upload-file")
     def upload_file(self, request, pk=None):
         """
         Used to upload a file to bucket
@@ -134,11 +139,36 @@ class CustomerViewSet(ActionSerializerMixin,ListRetrieveViewset):
             raise exceptions.ValidationError({"detail": "bucket_name is required"})
         path = request.data.get('path')
         s3_client = get_s3_connection(customer)
-        object_key = path + uploaded_file.name
+        object_key =  path + uploaded_file.name if path else uploaded_file.name
+
         try:
-            with open(uploaded_file, "rb") as file_:
-                s3_client.upload_fileobj(file_, bucket_name, object_key)
+            file_stream = io.BytesIO(uploaded_file.read())
+            s3_client.upload_fileobj(file_stream, bucket_name, object_key)
             return Response({"detail": "File uploaded successfully"})
         except Exception as error:
                 raise exceptions.ValidationError({"detail": str(error)})
 
+    @action(detail=True, methods=["get"], url_path="get-regions")
+    def get_regions(self, request, pk=None):
+        """
+        Used to fetch regions list
+        """
+        customer = self.get_object()
+        ec2_client = get_ec2_connection(customer)
+        response = ec2_client.describe_regions()
+        # regions = regions = [{'id': index + 1, 'name': region['RegionName']} for index, region in enumerate(response['Regions'])]
+        regions = regions = [{'id': region['RegionName'], 'name': region['RegionName']} for region in response['Regions']]
+        search = request.query_params.get("search")
+        if search:
+            regions = [region for region in regions if search in region["name"]]
+        page=self.paginate_queryset(regions)
+        return self.get_paginated_response(page)
+    
+    @action(detail=True, methods=["get"], url_path="create-vpc")
+    def create_vpc(self, request, pk=None):
+        """
+        Used to fetch regions list
+        """
+        customer = self.get_object()
+        ec2_client = get_ec2_connection(customer)
+        return Response({})
