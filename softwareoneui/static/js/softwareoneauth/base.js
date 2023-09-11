@@ -7,8 +7,12 @@ const ONE_APP_APIS = {
     users: '/auth/users',
     refreshToken: '/auth/token/refresh',
     customers: '/api/customers',
+    createBuckets: '/api/customers/{customer}/create-bucket',
     buckets: '/api/customers/{customer}/get-buckets',
-    bucket_files: '/api/customers/{customer}/get-files'
+    bucket_files: '/api/customers/{customer}/get-files',
+    uploadFile: '/api/customers/{customer}/upload-file',
+    getBucketFiles: '/api/customers/{customer}/get-files',
+    getRegions: '/api/customers/{customer}/get-regions',
 }
 const statusCodeErrors = {
     401: 'You are not authorized to make this request',
@@ -160,25 +164,28 @@ const performUserLogout = function () {
 };
 
 const setProfile = function(){
-    let user = JSON.parse(localStorage.getItem("user"))
-    if (!user){
-    $.ajax({
-        url: ONE_APP_BASE_URL + ONE_APP_APIS.userProfile,
-        success: function (user) {
-            user=user
-            localStorage.setItem('user', JSON.stringify(user));
+    if(document.getElementById("userfirstname")){
+        let user = JSON.parse(localStorage.getItem("user"))
+        if (!user){
+        $.ajax({
+            url: ONE_APP_BASE_URL + ONE_APP_APIS.userProfile,
+            success: function (user) {
+                user=user
+                localStorage.setItem('user', JSON.stringify(user));
+                $("#userfirstname").text(user.first_name)
+            },
+            error: function (jqXHR) {
+                toastr.error(jqXHR.responseJSON);
+            },
+        });
+        }else{
             $("#userfirstname").text(user.first_name)
-        },
-        error: function (jqXHR) {
-            toastr.error(jqXHR.responseJSON);
-        },
-    });
-    }else{
-        $("#userfirstname").text(user.first_name)
+        }
     }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    setProfile()
     if (document.getElementById('logoutBtn')) {
         document.getElementById('logoutBtn').onclick = performUserLogout;
     }
@@ -218,6 +225,27 @@ let format = function (str, data) {
 
         return prop;
     });
+};
+
+const getErrorMsg = function (obj) {
+    if (typeof obj === 'string' || typeof obj === 'number') {
+        return obj;
+    }
+    if (obj) {
+        for (const property in obj) {
+            return getErrorMsg(obj[property]);
+        }
+    }
+};
+
+const downloadUsingAnchorElement = function (url) {
+    const anchor = document.createElement('a');
+    const FILE_NAME = url.replace(/^.*[\\\/]/, '').split('?')[0];
+    anchor.href = url;
+    anchor.download = FILE_NAME;
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
 };
 
 String.prototype.format = function (data) {

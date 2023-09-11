@@ -33,7 +33,7 @@ const OneAppSelect2 = function ({
     return $(elementSelector).select2({
         placeholder,
         maximumSelectionLength: maxSelection,
-	allowClear:"true",
+	    allowClear:"true",
         ajax: {
             traditional,
             data,

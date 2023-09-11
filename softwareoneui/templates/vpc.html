@@ -1,53 +1,75 @@
 {% extends 'profile.html' %}
+{% load static %}
+{% block css %}<link rel="stylesheet" href="{% static 'css/vpc.css' %}">{% endblock %}
 {% block content %}
+<div id="vpc">
+  <div class="vpc-main">
+    <div class="separator">
+      <hr class="line">
+      <h1>VPC</h1>
+      <hr class="line">
+    </div>
 
-<div class="modal">
-    <form class="form">
+    <div class="input_cont">
+      <label for="customer" class="label"><h2>Select Customer:</h2></label>
+      <select id="customer" class="form-select form-select-solid input_field" data-control="select2"></select>
+      <label for="vpc-name" class="label"><h2>VPC Name Tag</h2></label>
+      <input class="input_field" type="text" id="vpc-name" placeholder="my-vpc-01">
 
-      <div class="separator">
-        <hr class="line">
-        <p>VPC</p>
-        <hr class="line">
+      <label for="" class="label"><h2>Region</h2></label>
+      <select id="region" class="form-select form-select-solid input_field" data-control="select2"></select>
+    
+
+      <label for="" class="label"><h2>IPv4 CIDR block</h2></label>
+      <input class="input_field" type="text" placeholder="10.0.0.0/24">
+
+      <label for="" class="label"><h2>Tenancy</h2></label>
+      <select class="input_field"  type="text" name="">
+        <option>Default</option>
+        <option>Dedicated</option>
+      </select>
+
+      <label for="" class="label"><h2>Number of Availability Zones (AZs)</h2></label>
+      <div id="" class="Zone">
+        <button id="btn1" class="b">1</button>
+        <button id="btn2" class="b">2</button>
+        <button id="btn3" class="b">3</button>
       </div>
 
-      <div class="credit-card-info--form">
+      <div id="select-container" class="zone">
+        <!-- Select tags will be added here dynamically -->
+      </div>
 
-        {% comment %} <div class="input_container">
-          <label for="password_field" class="input_label">AWS Account No</label>
-          <input id="password_field" class="input_field" type="text" name="input-name" title="Inpit title" placeholder="0000 0000 0000 0000">
-        </div> {% endcomment %}
-
-        {% comment %} <div class="input_container">
-          <label for="password_field" class="input_label">AWS Account Name</label>
-          <input id="password_field" class="input_field" type="number" name="input-name" title="Inpit title" placeholder="Enter your full name">
-        </div>
-
-
-        <div class="input_container">
-          <label for="password_field" class="input_label">AWS Access Key</label>
-          <input id="password_field" class="input_field" type="text" name="input-name" title="Inpit title" placeholder="* Access Key..">
-        </div>
-
-        <div class="input_container">
-          <label for="password_field" class="input_label">AWS Secret key</label>
-          <input id="password_field" class="input_field" type="number" name="input-name" title="Inpit title" placeholder="* Secret Key..">
-        </div> {% endcomment %}
-
-        
-
-        {% comment %} <div class="input_container">
-          <label for="password_field" class="input_label">Expiry Date / CVV</label>
-          <div class="split">
-            <input id="password_field" class="input_field" type="text" name="input-name" title="Expiry Date" placeholder="01/23">
-            <input id="password_field" class="input_field" type="number" name="cvv" title="CVV" placeholder="CVV">
+      <div class="subnet">
+        <div class="public input_cont">
+          <div>
+            <label for="" class="label"><h2>Number of public subnets</h2></label>
           </div>
-        </div> {% endcomment %}
+          <div id="public-block" class="subnet-btn">
+            <button id="public-btn-0" class="b">0</button>
+            <button id="public-btn-1" class="b">1</button>
+          </div>
+          <div id="public-input-container" class="subnet-input input_cont"></div>
+        </div>
 
+        <div class="private input_cont">
+          <div>
+            <label for="" class="label"><h2>Number of private subnets</h2></label>
+          </div>
+          <div id="private-block" class="subnet-btn">
+            <button id="private-btn-0" class="b">0</button>
+            <button id="private-btn-1" class="b">1</button>
+            <button id="private-btn-2" class="b">2</button>
+          </div>
+          <div id="private-input-container" class="subnet-input input_cont"></div>
+        </div>        
       </div>
 
-      {% comment %} <button class="purchase--btn">Register</button> {% endcomment %}
-
-    </form>
+      <button class="s3-btn">Create VPC</button>
   </div>
-
-{% endblock content %}
+</div>
+{% endblock %}
+{% block js %}
+<script src="{% static 'assets/js/select2.js' %}"></script>
+<script src="{% static 'js/vpc.js' %}"></script>
+{% endblock %}

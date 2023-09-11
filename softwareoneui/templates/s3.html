@@ -1,22 +1,62 @@
 {% extends 'profile.html' %}
 {% load static %}
+{% block css %}<link rel="stylesheet" href="{% static 'css/vpc.css' %}">{% endblock %}
 {% block content %}
 
-<body class="container m-5 p-3">
-  <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="mb-1 mb-sm-5 row">
-          <label for="customer">Select a Customer</label>
-            <select id="customer" class="form-select form-select-solid" data-control="select2">
-            </select>
-        </div>
-        <div class="mb-1 mb-sm-5 row" id="action_div"></div>
-        <div id="dynamic-content">
-            <!-- Dynamic content will be added here based on selected option -->
-        </div>
-      </div>
-  </div>
+<div id="s3">
+  <div class="s3-main">
+    <div class="separator">
+      <hr class="line">
+      <h1>S3</h1>
+      <hr class="line">
+    </div>
 
+    <div class="input_con">
+      <label for="customer" class="label"><h2>Select Customer:</h2></label>
+      <select id="customer" class="form-select form-select-solid input_field" data-control="select2"></select>
+      
+      <div id="action-buttons" class="btn-3">
+        <button id="button1" name="create_bucket_div" class="create b">Create Bucket</button>
+        <button id="button2" name="uplaod_file_div" class="uplaod b">Upload</button>
+        <button id="button3" name="download_file_div" class="download b">Download</button>
+      </div>
+    </div>
+    
+    <div id="create_bucket_div" >
+      <!-- <form id="customer1-form" > -->
+        <div class="input_con">
+          <label for="" class="label"><h2>Create New Bucket</h2></label>
+          <input class="input_field" id="bcktname" type="text" name="Bucket-name" placeholder="Enter New Bucket name..">
+          <button class="s3-btn" id="createBtn">Create Bucket</button>
+        </div>
+      <!-- </form> -->
+    </div>
+
+    <div id="uplaod_file_div" >
+        <div class="input_con">
+          <label for="" class="label"> <h2>Select Bucket</h2></label>
+          <select id="selectBucketUpload" class="form-select form-select-solid input_field" data-control="select2"></select>
+          <label for="" class="label"><h2>Choose file</h2></label>
+          <div class="input_field file">
+            <input type="file" id="file_to_upload" placeholder="Upload">
+          </div>              
+          <label for="" class="label"><h2>Enter Path</h2></label>
+          <input class="input_field" id="path" type="text" placeholder="documents/scripts/">
+          <button class="s3-btn" id="uploadBtn">Upload</button>
+        </div>
+    </div>
+
+    <div id="download_file_div">
+        <div class="input_con">
+          <label for="" class="label"><h2>Select Bucket</h2></label>
+          <select id="selectBucketDownload" class="form-select form-select-solid input_field" data-control="select2"></select>
+          <label for="" class="label"><h2>Select File</h2></label>
+          <select id="selectFile"  class="form-select form-select-solid input_field" data-control="select2"></select>
+          <button class="s3-btn" id="downloadBtn">Download</button>
+        </div>
+    </div>
+  </div>
+</div>
 
 {% endblock content %}
 {% block js%}

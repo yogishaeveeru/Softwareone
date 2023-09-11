@@ -87,8 +87,8 @@ def registration(request):
 def aws(request):
     return render(request,'aws.html')
 
-def vpc(request):
-    return render(request,'vpc.html')
+# def vpc(request):
+#     return render(request,'vpc.html')
 
 def ec2(request):
     return render(request,'ec2.html')
@@ -96,6 +96,9 @@ def ec2(request):
 
 class S3View(TemplateView):
     template_name = "s3.html"
+
+class VPCView(TemplateView):
+    template_name = "vpc.html"
     
 def report(request):
     return render(request,'report.html')
