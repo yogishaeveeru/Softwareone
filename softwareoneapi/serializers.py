@@ -19,18 +19,6 @@ class BaseSuccessMessageSerializer(SerializerSuccessMessageMixin, serializers.Se
     comes with SerializerSuccessMessageMixin
     """
 
-
-class BaseGenerateReportSerializer(serializers.ModelSerializer):
-    start_date = serializers.DateField(write_only=True)
-    end_date = serializers.DateField(write_only=True)
-
-    def validate(self, attrs):
-        attrs = super().validate(attrs)
-        if attrs["start_date"] > attrs["end_date"]:
-            raise serializers.ValidationError(dict(end_date="End Date must be after or same as start date"))
-        return attrs
-
-
 class ScopedPrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
     def __init__(self, **kwargs):
         self.access_policy = kwargs.pop("access_policy", None)

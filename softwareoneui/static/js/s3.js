@@ -95,20 +95,6 @@ $("#uploadBtn").click(function() {
         toastr.error("Please select file and bucket")
     }
 })
-$("#createBtn").click(function() {
-    if($("#bcktname").val()){
-        $.ajax({
-            traditional:true,
-            data:{"bucket_name":$("#bcktname").val()},
-            url: ONE_APP_BASE_URL + ONE_APP_APIS.createBuckets.format({customer}),
-        }).done(function (data) {
-            console.log("data",data)
-            toastr.success(data.detail)
-        }).fail(function (data) {
-            toastr.error(data.responseJSON.detail);
-        })
-    }
-})
 
 $("#downloadBtn").click(function() {
     let bucket= $($("#selectBucketDownload").html()).last().text()

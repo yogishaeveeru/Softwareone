@@ -31,7 +31,7 @@ class CustomerViewSet(ActionSerializerMixin,BaseModelViewset):
     access_policy = CustomerAccessPolicy
     queryset = Customer.objects.values()
     model=Customer
-    serializer_class = ListCustomerSerializer
+    serializer_class = CustomerSerializer
     search_fields = ["username"]
     ordering = ["username"]
     actions_serializer_class = {
@@ -45,7 +45,6 @@ class CustomerViewSet(ActionSerializerMixin,BaseModelViewset):
                 "username"
             ),
         }
-
         return self.access_policy.scope_queryset(self.request, actions.get(self.action, self.queryset))
 
     def perform_create(self, serializer):
