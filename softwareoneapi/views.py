@@ -15,7 +15,7 @@ from rest_framework.decorators import action
 from softwareoneapi.models import Customer
 from softwareoneapi.serializers import CustomerSerializer, ListCustomerSerializer
 from softwareoneapi.access_policy import CustomerAccessPolicy
-from softwareoneapi.utils import get_s3_connection, get_ec2_connection
+from softwareoneapi.utils import get_s3_connection, get_ec2_connection, create_vpc_and_subnets
 
 class BaseCreateAPIView(APIView):
     """
@@ -163,11 +163,15 @@ class CustomerViewSet(ActionSerializerMixin,BaseModelViewset):
         page=self.paginate_queryset(regions)
         return self.get_paginated_response(page)
     
-    @action(detail=True, methods=["get"], url_path="create-vpc")
+    @action(detail=True, methods=["post"], url_path="create-vpc")
     def create_vpc(self, request, pk=None):
         """
-        Used to fetch regions list
+        Used to create vpc and subnets
         """
         customer = self.get_object()
-        ec2_client = get_ec2_connection(customer)
-        return Response({})
+        data=request.data
+        region = data.get("region")
+        ec2_client = get_ec2_connection(customer,region=region)
+        vpc_id, public_subnet_ids, private_subnet_ids = create_vpc_and_subnets(data, ec2_client)
+
+        return Response({"VPCId": vpc_id, "PublicSubnetIds": public_subnet_ids, "PrivateSubnetIds": private_subnet_ids})
