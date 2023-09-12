@@ -21,12 +21,12 @@
     
 
       <label for="" class="label"><h2>IPv4 CIDR block</h2></label>
-      <input class="input_field" type="text" placeholder="10.0.0.0/24">
+      <input class="input_field" type="text" id="cidr" placeholder="10.0.0.0/24">
 
       <label for="" class="label"><h2>Tenancy</h2></label>
-      <select class="input_field"  type="text" name="">
-        <option>Default</option>
-        <option>Dedicated</option>
+      <select class="input_field" id="tenancy" type="text" >
+        <option value="default">Default</option>
+        <option value="dedicated">Dedicated</option>
       </select>
 
       <label for="" class="label"><h2>Number of Availability Zones (AZs)</h2></label>
@@ -65,7 +65,7 @@
         </div>        
       </div>
 
-      <button class="s3-btn">Create VPC</button>
+      <button class="s3-btn" id="vpcSubBtn">Create VPC</button>
   </div>
 </div>
 {% endblock %}

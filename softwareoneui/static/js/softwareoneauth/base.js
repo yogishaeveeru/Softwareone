@@ -13,6 +13,7 @@ const ONE_APP_APIS = {
     uploadFile: '/api/customers/{customer}/upload-file',
     getBucketFiles: '/api/customers/{customer}/get-files',
     getRegions: '/api/customers/{customer}/get-regions',
+    createVpc: '/api/customers/{customer}/create-vpc',
 }
 const statusCodeErrors = {
     401: 'You are not authorized to make this request',
