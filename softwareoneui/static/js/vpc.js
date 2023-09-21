@@ -6,7 +6,7 @@ let publicInputElements;
 $(document).ready(function() {
     const selectContainer = document.getElementById('select-container');
     OneAppSelect2({
-        api: ONE_APP_APIS.customers,
+        api: S_ONE_APIS.customers,
         elementSelector: '#customer',
         placeholder: 'Select a Customer',
         textField: "username"
@@ -14,7 +14,7 @@ $(document).ready(function() {
     $("#customer").change(function(){
         customer=$(this).val()
         OneAppSelect2({
-            api: ONE_APP_APIS.getRegions.format({customer}),
+            api: S_ONE_APIS.getRegions.format({customer}),
             elementSelector: '#region',
             placeholder: 'Select a Region',
         });
@@ -188,7 +188,7 @@ const btn1 = document.getElementById('btn1');
                 $.ajax({
                     type:"POST",
                     data:formatted_data,
-                    url: ONE_APP_BASE_URL + ONE_APP_APIS.createVpc.format({customer}),
+                    url:  S_ONE_APIS.createVpc.format({customer}),
                 }).done(function (data) {
                     $("input, #select2, select").val(null).trigger("change");
                     const { VPCId, PublicSubnetIds, PrivateSubnetIds } = data;

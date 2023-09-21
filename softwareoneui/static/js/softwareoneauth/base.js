@@ -1,4 +1,4 @@
-const ONE_APP_APIS = {
+const S_ONE_APIS = {
     login: '/auth/token',
     verifyAuthToken: '/auth/token/verify',
     forgetPassword: '/auth/password/forget',
@@ -49,7 +49,7 @@ const requestRefreshTokens = function () {
         redirectToLoginPage();
     }
     $.ajax({
-        url: ONE_APP_BASE_URL + ONE_APP_APIS.refreshToken,
+        url:  S_ONE_APIS.refreshToken,
         data: {refresh: refreshToken},
         type: 'POST',
         beforeSend: null,
@@ -132,7 +132,7 @@ const submitFormData = function (opts) {
             submitButton.prop('disabled', true);
             submitButton.attr('data-kt-indicator', 'on');
             const AJAX_OPTIONS = {
-                url: ONE_APP_BASE_URL + opts.apiEndPoint,
+                url:  opts.apiEndPoint,
                 data: JSON.stringify(
                     objectifyForm(opts.submitEvent.target, opts.extraData, opts.nullFields, opts.excludeHiddenInputs),
                 ),
@@ -169,7 +169,7 @@ const setProfile = function(){
         let user = JSON.parse(localStorage.getItem("user"))
         if (!user){
         $.ajax({
-            url: ONE_APP_BASE_URL + ONE_APP_APIS.userProfile,
+            url:  S_ONE_APIS.userProfile,
             success: function (user) {
                 user=user
                 localStorage.setItem('user', JSON.stringify(user));

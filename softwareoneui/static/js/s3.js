@@ -2,7 +2,7 @@ let customer;
 let buckets_api;
 let buttonName;
 OneAppSelect2({
-    api: ONE_APP_APIS.customers,
+    api: S_ONE_APIS.customers,
     elementSelector: '#customer',
     placeholder: 'Select a Customer',
     textField: "username"
@@ -22,7 +22,7 @@ $("#customer").change(function() {
         $("#download_file_div").hide()
         $(".b").css("color", "");
     } 
-    buckets_api=ONE_APP_APIS.buckets.format({customer});
+    buckets_api=S_ONE_APIS.buckets.format({customer});
 
 })
 $(".b").click(function() {
@@ -49,7 +49,7 @@ $(".b").click(function() {
             $("#selectBucketDownload").change(function() {
             $("#selectFile").empty()
             let selectedOption = $($(this).html()).last().text();
-            let files_api= ONE_APP_APIS.bucket_files.format({customer}) + `?bucket_name=${selectedOption}`
+            let files_api= S_ONE_APIS.bucket_files.format({customer}) + `?bucket_name=${selectedOption}`
             OneAppSelect2({
                 api: files_api,
                 elementSelector: "#selectFile",
@@ -65,7 +65,7 @@ $("#createBtn").click(function() {
         $.ajax({
             traditional:true,
             data:{"bucket_name":$("#bcktname").val()},
-            url: ONE_APP_BASE_URL + ONE_APP_APIS.createBuckets.format({customer}),
+            url:  S_ONE_APIS.createBuckets.format({customer}),
         }).done(function (data) {
             console.log("data",data)
             toastr.success(data.detail)
@@ -85,7 +85,7 @@ $("#uploadBtn").click(function() {
             data:data,
             processData: false,
             contentType: false,
-            url: ONE_APP_BASE_URL + ONE_APP_APIS.uploadFile.format({customer}),
+            url:  S_ONE_APIS.uploadFile.format({customer}),
         }).done(function (data) {
             toastr.success(data.detail)
         }).fail(function (data) {
@@ -102,7 +102,7 @@ $("#downloadBtn").click(function() {
     if(bucket && key){
         $.ajax({
             data:{"bucket_name":bucket, "key":key},
-            url: ONE_APP_BASE_URL + ONE_APP_APIS.getBucketFiles.format({customer}),
+            url:  S_ONE_APIS.getBucketFiles.format({customer}),
         }).done(function (data) {
             console.log("data",data)
             downloadUsingAnchorElement(data.url)

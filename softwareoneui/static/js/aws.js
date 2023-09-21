@@ -18,7 +18,7 @@ $(document).ready(function() {
                 $.ajax({
                     data: data,
                     type: 'POST',
-                    url: ONE_APP_BASE_URL + ONE_APP_APIS.customers,
+                    url:  S_ONE_APIS.customers,
                 }).done(function (data) {
                     $("#regForm").trigger('reset');
                     toastr.success("Registered successfully")

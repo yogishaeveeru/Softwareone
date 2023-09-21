@@ -3,7 +3,7 @@ $('#login-form').submit(function (event) {
     submitFormData({
         // formValidation: loginFormValidation,
         submitEvent: event,
-        apiEndPoint: ONE_APP_APIS.login,
+        apiEndPoint: S_ONE_APIS.login,
         authRequired: false,
         onSuccess: function (jsonResponse) {
             if (jsonResponse.access && jsonResponse.refresh) {
