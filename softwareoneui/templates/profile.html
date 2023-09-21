@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
     {% block css %}{% endblock %}
     <link rel="stylesheet" href="{% static 'assets/plugins/global/plugins.bundle.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/swiffy-slider.min.css' %}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     {% block head_js %}
@@ -12,10 +13,9 @@
     <script src="{% static 'js/softwareoneauth/base.js' %}"></script>
     <script>
       const CURRENT_URL = '{{ request.path }}';
-      const LOGIN_URL = '{{ S_ONE_BASE_URL }}';
+      const LOGIN_URL = '/';
       const MAIN_PAGE_URL = '{% url "profile" %}';
       const PERMISSION_DENIED_IMAGE_STATIC_FILE_URL = '{% static "img/blur-image.png" %}';
-      const ONE_APP_BASE_URL = '{{ S_ONE_BASE_URL }}';
     </script>
     <script src="{% static 'js/softwareoneauth/loggedin_check.js' %}"></script>
   {% endblock head_js %}
@@ -72,9 +72,10 @@
     </div>
     {% block profile_js%}
     <script src="{% static 'js/profile.js' %}"></script>
-    {% endblock profile_js%}
+    <script src="{% static 'assets/js/swiffy-slider.min.js' %}"></script>
+    {% endblock %}
     {% block js%}
-    {% endblock js%}
+    {% endblock %}
     
 </body>
 </html>

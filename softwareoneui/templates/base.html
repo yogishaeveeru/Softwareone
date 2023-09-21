@@ -12,10 +12,9 @@
     <script src="{% static 'assets/plugins/global/plugins.bundle.js' %}"></script>
     <script>
       const CURRENT_URL = '{{ request.path }}';
-      const LOGIN_URL = '{{ S_ONE_BASE_URL }}';
+      const LOGIN_URL = '/';
       const MAIN_PAGE_URL = '{% url "profile" %}';
       const PERMISSION_DENIED_IMAGE_STATIC_FILE_URL = '{% static "img/blur-image.png" %}';
-      const ONE_APP_BASE_URL = '{{ S_ONE_BASE_URL }}';
     </script>
     <script src="{% static 'js/softwareoneauth/base.js' %}"></script>
     <!-- <script src="{% static 'js/softwareoneauth/loggedin_check.js' %}"></script> -->

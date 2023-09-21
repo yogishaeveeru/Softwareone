@@ -38,7 +38,7 @@ const OneAppSelect2 = function ({
             traditional,
             data,
             processResults,
-            url: ONE_APP_BASE_URL + api,
+            url: api,
         },
         templateResult,
         templateSelection,

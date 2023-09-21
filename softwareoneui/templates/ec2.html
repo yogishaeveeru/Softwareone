@@ -1,53 +1,284 @@
 {% extends 'profile.html' %}
+{% load static %}
+{% block css %} <link rel="stylesheet" href="{% static 'css/ec2.css' %}">{% endblock %}
+
 {% block content %}
+<div id="ec">
+  <div class="ec-main">
+    <div class="separator">
+      <hr class="line">
+      <p>EC2</p>
+      <hr class="line">
+    </div>
 
-<div class="modal">
-    <form class="form">
+    <div class="ec2_input_div">
 
-      <div class="separator">
-        <hr class="line">
-        <p>EC2</p>
-        <hr class="line">
-      </div>
-
-      <div class="credit-card-info--form">
-
-        {% comment %} <div class="input_container">
-          <label for="password_field" class="input_label">AWS Account No</label>
-          <input id="password_field" class="input_field" type="text" name="input-name" title="Inpit title" placeholder="0000 0000 0000 0000">
-        </div>
-
-        <div class="input_container">
-          <label for="password_field" class="input_label">AWS Account Name</label>
-          <input id="password_field" class="input_field" type="number" name="input-name" title="Inpit title" placeholder="Enter your full name">
-        </div>
-
-
-        <div class="input_container">
-          <label for="password_field" class="input_label">AWS Access Key</label>
-          <input id="password_field" class="input_field" type="text" name="input-name" title="Inpit title" placeholder="* Access Key..">
-        </div>
-
-        <div class="input_container">
-          <label for="password_field" class="input_label">AWS Secret key</label>
-          <input id="password_field" class="input_field" type="number" name="input-name" title="Inpit title" placeholder="* Secret Key..">
-        </div> {% endcomment %}
-
-        
-
-        {% comment %} <div class="input_container">
-          <label for="password_field" class="input_label">Expiry Date / CVV</label>
-          <div class="split">
-            <input id="password_field" class="input_field" type="text" name="input-name" title="Expiry Date" placeholder="01/23">
-            <input id="password_field" class="input_field" type="number" name="cvv" title="CVV" placeholder="CVV">
+      <div class="parent">
+        Name and tags
+        <span class="arrow">&#9660;</span>
+        <div class="content">
+          <div class="ec2_input">
+            <label for="" class="ec2_label">Region</label>
+            <select class="input_field"  type="text" name="">
+              <option>select1</option>
+              <option>select1</option>
+            </select>
+            <label for="" class="ec2_label">Name</label>
+            <input class="input_field" type="text" placeholder="e.g. My Web Server">
           </div>
-        </div> {% endcomment %}
-
+        </div>
       </div>
 
-      {% comment %} <button class="purchase--btn">Register</button> {% endcomment %}
+      <div class="parent">
+        Application and OS Images (Amazon Machine Image)
+        <span class="arrow">&#9660;</span>
+        <div class="content">
+          <div class="ec2_input">
+            {% comment %} img {% endcomment %}
+            <!-- <div class="swiffy-slider slider-item-show4 slider-nav-outside slider-nav-dark slider-nav-sm slider-nav-visible slider-nav-page slider-item-snapstart slider-nav-autoplay slider-nav-autopause slider-item-ratio slider-item-ratio-contain slider-item-ratio-32x9 bg-white shadow-lg py-3 py-lg-4" data-slider-nav-autoplay-interval="2000">
+              <div class="slider-container">
+                <div><img src="../assets/img/brandlogos/css-3.svg" alt="..."></div>
+                <div><img src="../assets/img/brandlogos/DWLogoColor_sm.svg" loading="lazy" alt="..."></div>
+                <div><img src="../assets/img/brandlogos/javascript-1.svg" loading="lazy" alt="..."></div>
+                <div><img src="../assets/img/brandlogos/bootstrap-5.svg" loading="lazy" alt="..."></div>
+                <div><img src="../assets/img/brandlogos/eslint-1.svg" loading="lazy" alt="..."></div>
+                <div><img src="../assets/img/brandlogos/github-2.svg" loading="lazy" alt="..."></div>
+                <div><img src="../assets/img/brandlogos/html-1.svg" loading="lazy" alt="..."></div>
+              </div>
+              <button type="button" class="slider-nav" aria-label="Go left"></button>
+              <button type="button" class="slider-nav slider-nav-next" aria-label="Go left"></button>
+            </div> -->
+            {% comment %}  {% endcomment %}
+            <label for="" class="ec2_label">Amazon Machine Image (AMI)</label>
+            <select class="input_field"  type="text" name="">
+              <option>select1</option>
+              <option>select1</option>
+            </select>
+            <label for="" class="ec2_label">Description</label>
+            <p>Amazon Linux 2023 AMI 2023.1.20230906.1 x86_64 HVM kernel-6.1</p>
+            <div class="archi">
+              <div class="ture ec2_input">
+                <label for="" class="ec2_label">Architecture</label>
+                <select class="input_field"  type="text" name="">
+                  <option>64-bit</option>
+                  <option>select1</option>
+                </select>
+              </div>
+              <div class="ture ec2_input">
+                <label for="" class="ec2_label">AMI ID</label>
+                <p>ami-02bb7d8191b50f4bb</p>
+              </div>        
+            </div>
+          </div>
+        </div>
+      </div>
+      
 
-    </form>
+      <div class="parent">
+        Instance type
+        <span class="arrow">&#9660;</span>
+        <div class="content">
+          <div class="ec2_input">
+            <label for="" class="ec2_label">Instance type</label>
+            <select class="input_field"  type="text" name="">
+              <option>select1</option>
+              <option>select1</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <div class="parent">
+        Key pair (login)
+        <span class="arrow">&#9660;</span>
+        <div class="content">
+          <div class="ec2_input">
+            <label for="" class="ec2_label">Key pair name - required </label>
+            <select class="input_field"  type="text" name="">
+              <option>select1</option>
+              <option>select1</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="parent">
+        Network settings
+        <span class="arrow">&#9660;</span>
+        <div class="content">
+          <div class="ec2_input">
+            <label for="" class="ec2_label">VPC - required</label>
+            <select class="input_field"  type="text" name="">
+              <option>select1</option>
+              <option>select1</option>
+            </select>
+            <label for="" class="ec2_label">Subnet</label>
+            <select class="input_field"  type="text" name="">
+              <option>select1</option>
+              <option>select1</option>
+            </select>
+            <label for="" class="ec2_label">Auto-assign public IP</label>
+            <select class="input_field"  type="text" name="">
+              <option>select1</option>
+              <option>select1</option>
+            </select>
+
+            <label for="" class="ec2_label">Firewall (security groups)</label>
+            <form class="firewall">
+              <label class="radio">
+                <input type="radio" name="radioGroup" id="radio1"> Create security group
+              </label>
+
+              <label class="radio">
+                <input type="radio" name="radioGroup" id="radio2"> Select existing security group
+              </label>
+            </form>
+
+            <div id="content1" style="display: none;">
+              <div class="ec2_input">
+                <label for="" class="ec2_label">Security group name - required</label>
+                <input class="input_field" type="text" placeholder="my-vpc-01">
+                <label for="" class="ec2_label">Description - required</label>
+                <input class="input_field" type="text" placeholder="my-vpc-01">
+
+                <label for="" class="ec2_label">Inbound Security Group Rules</label>
+                <div class="ec2_input inbound" style="display:flex">
+                  <div>
+                    <label for="" class="ec2_label">Type
+                      <select class="input_field"  type="text" name="">
+                        <option>Custom TCP</option>
+                        <option>Custom UDP</option>
+                        <option>Custom ICMP-IPv4</option>
+                        <option>Custom ICMP-IPv6</option>
+                        <option>Custom Protocol</option>
+                        <option>All TCP</option>
+                        <option>All UDP</option>
+                        <option>All ICMP - IPv4</option>
+                        <option>All ICMP - IPv6</option>
+                        <option>All ICMP - IPv6</option>
+                        <option>ssh</option>
+                        <option>SMTP</option>
+                        <option>DNS (UDP)</option>
+                        <option>DNS (TCP)</option>
+                        <option>HTTP</option>
+                        <option>POP3</option>
+                        <option>IMAP</option>
+                        <option>LDAP</option>
+                        <option>HTTPS</option>
+                        <option>SMB</option>
+                        <option>SMTPS</option>
+                        <option>IMAPS</option>
+                        <option>POP3S</option>
+                        <option>MSSQL</option>
+                        <option>NFS</option>
+                        <option>MYSQL/Aurora</option>
+                        <option>rdp</option>
+                        <option>Redshift</option>
+                        <option>PostgreSQL</option>
+                        <option>Oracle-RDS</option>
+                        <option>WinRM-HTTP</option>
+                        <option>WinRM-HTTPS</option>
+                        <option>Elastic Graphics</option>
+                      </select>
+                    </label>
+                  </div>
+                  <div>
+                    <labelfor="" class="ec2_label">Protocol
+                      <input class="input_field" type="text" placeholder="my-vpc-01">
+                    </labelfor=>
+                  </div>
+                  <div>
+                    <label for="" class="ec2_label">Port range 
+                      <input class="input_field" type="number" placeholder="my-vpc-01">
+                    </label>
+                  </div>          
+                </div>
+                
+                
+                <div class="ec2_input inbound" style="display:flex">
+                  <div>
+                    <label for="" class="ec2_label">Source type
+                      <select class="input_field"  type="text" name="">
+                        <option>Anywhere</option>
+                        <option>Custom</option>
+                        <option>My IP</option>
+                      </select>
+                    </label>
+                  </div>
+                  <div>
+                    <label for="" class="ec2_label">Source
+                      <select class="input_field"  type="text" name="">
+                        <option>select1</option>
+                        <option>select1</option>
+                      </select>
+                    </label>
+                  </div>
+                  <div>
+                    <label for="" class="ec2_label">Description - optional
+                      <input class="input_field" type="text" placeholder="my-vpc-01">
+                    </label>
+                  </div>          
+                </div>
+
+
+                
+                
+                
+              </div>
+            </div>
+      
+            <div id="content2" style="display: none;">
+              <div class="ec2_input">
+                <label for="" class="ec2_label">Description - required</label>
+                <input class="input_field" type="text" placeholder="Select security groups">
+              </div>
+            </div>
+      
+          </div>
+        </div>
+      </div>
+
+      <div class="parent">
+        Configure storage
+        <span class="arrow">&#9660;</span>
+        <div class="content">
+          <div class="ec2_input storage" style="display:flex">
+            <div>
+              <label>10x
+                <input class="input_field" type="number"></input>
+              </label>
+            </div>
+            <div>
+              <label>GiB
+                <select class="input_field"  type="text" name="">
+                  <option>select1</option>
+                  <option>select1</option>
+                </select>
+              </label>
+            </div>          
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
+  <div class="ec-main">
+    <div class="ec2_input">
+      <div class="parent">
+        Summary
+        <span class="arrow">&#9660;</span>
+        <div class="content">
+          <div class="ec2_input">
+            <label for="" class="ec2_label">Name</label>
+            <input class="input_field" type="text" placeholder="e.g. My Web Server">
+            <button class="s3-btn">Deployment</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
 {% endblock content %}
+{% block js %}<script src="{% static 'js/ec2.js' %}"></script>{% endblock %}
